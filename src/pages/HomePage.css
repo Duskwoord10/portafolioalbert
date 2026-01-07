@@ -1,0 +1,476 @@
+/* ========================================
+   SECCIÓN DE CITA DE BILL GATES
+   ======================================== */
+.quote-section {
+  padding: 5rem 0;
+  background: transparent;
+  position: relative;
+}
+
+.quote-container {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  transition: border-color 0.3s ease;
+}
+
+.quote-container:hover {
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.quote-image-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Eliminado el glow excesivo, solo dejamos un borde sutil */
+.quote-image-glow {
+  display: none;
+}
+
+.quote-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(14, 165, 233, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.quote-image:hover {
+  transform: scale(1.03);
+}
+
+.quote-content {
+  flex: 1;
+}
+
+.quote-icon {
+  width: 48px;
+  height: 48px;
+  color: #0ea5e9;
+  margin-bottom: 1.25rem;
+  opacity: 0.6;
+}
+
+.quote-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.quote-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.quote-divider {
+  width: 60px;
+  height: 3px;
+  background: #0ea5e9;
+  border-radius: 2px;
+  margin-bottom: 1.25rem;
+}
+
+.quote-subtext {
+  font-size: 1.0625rem;
+  color: #94a3b8;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.quote-author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.author-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0ea5e9;
+}
+
+.author-title {
+  font-size: 0.9375rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ========================================
+   SECCIÓN DE REDES SOCIALES
+   ======================================== */
+.social-section {
+  padding: 5rem 0;
+  background: transparent;
+}
+
+.social-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+/* Simplificado el icono animado */
+.social-icon-animated {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  border-radius: 16px;
+  margin-bottom: 1.25rem;
+}
+
+.social-icon-animated svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.social-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.social-subtitle {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.social-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Tarjetas simplificadas sin efectos de brillo excesivos */
+.social-card {
+  position: relative;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2rem;
+  text-decoration: none;
+  display: block;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.social-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Eliminado card-glow y card-shine */
+.card-glow,
+.card-shine {
+  display: none;
+}
+
+/* Instagram hover */
+.instagram-card:hover {
+  border-color: rgba(225, 48, 108, 0.3);
+  box-shadow: 0 20px 40px rgba(225, 48, 108, 0.15);
+}
+
+/* LinkedIn hover */
+.linkedin-card:hover {
+  border-color: rgba(0, 119, 181, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 119, 181, 0.15);
+}
+
+/* Header de la tarjeta */
+.social-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+/* Avatar simplificado sin animaciones de anillo */
+.avatar-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  padding: 3px;
+}
+
+.instagram-ring {
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.linkedin-ring {
+  background: linear-gradient(135deg, #0077b5, #0ea5e9);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 3px solid #0f172a;
+  transition: transform 0.3s ease;
+}
+
+.social-card:hover .avatar-img {
+  transform: scale(1.05);
+}
+
+/* Badge de red social */
+.social-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.social-badge svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.instagram-badge {
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.linkedin-badge-icon {
+  background: linear-gradient(135deg, #0077b5, #0ea5e9);
+}
+
+.social-card:hover .social-badge {
+  transform: scale(1.1);
+}
+
+/* Info del perfil */
+.social-info {
+  margin-bottom: 1.25rem;
+}
+
+.social-handle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.social-name {
+  font-size: 0.9375rem;
+  color: #94a3b8;
+  margin-bottom: 0.375rem;
+}
+
+.social-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.linkedin-desc {
+  margin-top: 0.375rem;
+}
+
+/* Estadísticas de Instagram */
+.social-stats {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.social-card:hover .stat-num {
+  color: #0ea5e9;
+}
+
+.stat-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+/* Botón de seguir */
+.follow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+}
+
+.instagram-btn {
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.social-card:hover .follow-btn {
+  transform: translateY(-2px);
+}
+
+.follow-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.social-card:hover .follow-btn svg {
+  transform: translateX(4px);
+}
+
+/* LinkedIn Badge Embed */
+.linkedin-embed {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  min-height: 160px;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 900px) {
+  .quote-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .quote-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .quote-divider {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .quote-author {
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .quote-section {
+    padding: 3.5rem 0;
+  }
+
+  .quote-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .quote-text {
+    font-size: 1.25rem;
+  }
+
+  .social-section {
+    padding: 3.5rem 0;
+  }
+
+  .social-cards-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .social-title {
+    font-size: 1.875rem;
+  }
+
+  .social-card {
+    padding: 1.75rem;
+  }
+
+  .avatar-ring {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quote-container {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .quote-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .quote-text {
+    font-size: 1.125rem;
+  }
+
+  .social-title {
+    font-size: 1.5rem;
+  }
+
+  .social-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .avatar-ring {
+    width: 70px;
+    height: 70px;
+  }
+
+  .social-badge {
+    width: 40px;
+    height: 40px;
+  }
+
+  .follow-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.875rem;
+  }
+}
