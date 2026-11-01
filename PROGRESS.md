@@ -340,4 +340,4 @@ Los informes de la continuación se agregan debajo con archivos y pruebas concre
 - Frontend: subidos assets finales al bucket `albertsanflepage` y al bucket administrativo existente bajo `site/`; invalidaciones CloudFront `E15DL0KDZ9463N/I39HWMQORQ5AHXFA0CW5D2SYU3` y `E2O9QMN5FPIYRA/I9EGK8B540HFIB2I4NQBV4UNJB` completadas. HTTP 200 confirmado para inicio, `/sobre-mi`, `/blog` y `https://auth.albertsanfle.com/admin`.
 - Chatbot: Function URL directa cambió de `NONE` a `AWS_IAM`; verificado HTTP 403 al acceso anónimo y 200 por el proxy CMS.
 - Sin cambios DNS, datos CMS, credenciales ni registros publicados. El contenido de foto existente sigue en el CMS hasta que el administrador elija otra foto y publique. Respaldo de rollback de ambos `index.html`: `.cms-backups/production-before-cms-update-20261101/` (SHA-256 guardados en la sesión).
-- Git: pendiente subir el conjunto de cambios a ramas `Dev` y `Prod` del repositorio solicitado.
+- Git: entrega publicada en `origin/Dev` y `origin/Prod` del repositorio solicitado; ambas ramas se mantendrán alineadas al mismo commit.
