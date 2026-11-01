@@ -5,15 +5,34 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node server/index.js",
+    "admin:create": "node server/create-admin.js",
+    "backup:create": "node server/backup.js",
+    "backup:verify": "node server/verify-backup.js",
+    "backup:restore": "node server/restore-backup.js",
+    "migration:export": "node server/export-dynamodb.js",
+    "migration:aws": "node server/aws/migrate.js",
+    "test:staging": "node scripts/staging-smoke.js",
+    "security:migrate-totp": "node server/migrate-totp.js",
     "build": "vite build",
+    "build:lambda": "node scripts/build-lambda.js",
+    "test": "node --test server/*.test.js server/aws/*.test.js server/store/*.test.js src/cms/*.test.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1152.0",
+    "@aws-sdk/client-lambda": "^3.1152.0",
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@aws-sdk/client-sesv2": "^3.1152.0",
+    "@aws-sdk/client-ssm": "^3.1152.0",
+    "@aws-sdk/client-translate": "^3.1156.0",
+    "@aws-sdk/lib-dynamodb": "^3.1152.0",
+    "@aws-sdk/s3-request-presigner": "^3.1152.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.11.0"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

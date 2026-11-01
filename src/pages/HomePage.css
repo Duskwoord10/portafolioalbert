@@ -474,3 +474,7 @@
     font-size: 0.875rem;
   }
 }
+.linkedin-cookie-placeholder { padding: 18px; border: 1px solid rgba(150, 181, 226, .2); border-radius: 12px; background: rgba(255,255,255,.035); text-align: center; }
+.linkedin-cookie-placeholder p { color: #aebed3; font-size: 12px; line-height: 1.55; margin: 0 0 10px; }
+.linkedin-cookie-placeholder button { padding: 8px 12px; border: 1px solid rgba(120, 170, 240, .45); border-radius: 8px; color: #b5d4ff; background: rgba(75, 130, 220, .14); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.linkedin-cookie-placeholder button:hover { background: rgba(75, 130, 220, .28); }

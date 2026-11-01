@@ -1,0 +1,1253 @@
+.albert-chat-root,
+.albert-chat-root * {
+  box-sizing: border-box;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+.albert-chat-root button,
+.albert-chat-root a,
+.albert-chat-root input,
+.albert-chat-root textarea {
+  font: inherit;
+}
+
+.albert-chat-widget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999999;
+
+  width: 404px;
+  max-width: calc(100vw - 28px);
+  height: 640px;
+  max-height: calc(100dvh - 48px);
+
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid rgba(191, 219, 254, 0.72);
+  border-radius: 26px;
+
+  box-shadow:
+    0 34px 100px rgba(2, 6, 23, 0.34),
+    0 12px 34px rgba(15, 23, 42, 0.16);
+}
+
+.albert-chat-widget.is-open {
+  display: flex;
+  animation: albertWidgetIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes albertWidgetIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.albert-chat-header {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 11px 14px 12px;
+  overflow: hidden;
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 96% 0%,
+      rgba(59, 130, 246, 0.48),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 0% 120%,
+      rgba(14, 165, 233, 0.15),
+      transparent 42%
+    ),
+    linear-gradient(140deg, #06101e 0%, #0b1c38 58%, #1d4295 100%);
+}
+
+.albert-chat-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+
+  mask-image: linear-gradient(to bottom, #000 5%, transparent 100%);
+}
+
+.albert-chat-header::after {
+  content: "";
+  position: absolute;
+  right: -62px;
+  bottom: -110px;
+
+  width: 178px;
+  height: 178px;
+  border: 26px solid rgba(255, 255, 255, 0.036);
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.albert-header-bar {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  grid-template-columns: 37px minmax(0, 1fr) 37px;
+  align-items: center;
+  gap: 10px;
+}
+
+.albert-header-icon-button {
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+
+  color: #ffffff;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.085);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.albert-header-icon-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.albert-header-icon-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Brand */
+.albert-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.albert-brand-icon {
+  width: 41px;
+  height: 41px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(191, 219, 254, 0.2);
+  border-radius: 13px;
+
+  color: #bfdbfe;
+  background: rgba(2, 6, 23, 0.3);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 8px 18px rgba(2, 6, 23, 0.15);
+}
+
+.albert-brand-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.albert-brand-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.albert-brand-copy strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.05;
+  font-weight: 860;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.albert-brand-copy span {
+  overflow: hidden;
+  color: rgba(219, 234, 254, 0.76);
+  font-size: 10px;
+  line-height: 1.1;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.albert-header-intro {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.albert-header-copy {
+  min-width: 0;
+}
+
+.albert-header-copy h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1.08;
+  font-weight: 870;
+  letter-spacing: -0.035em;
+}
+
+.albert-header-copy p {
+  margin: 4px 0 0;
+
+  color: rgba(226, 232, 240, 0.76);
+  font-size: 10.6px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.albert-status {
+  min-width: max-content;
+  height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 0 9px;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 999px;
+
+  color: rgba(240, 253, 244, 0.96);
+  background: rgba(34, 197, 94, 0.1);
+
+  font-size: 9.5px;
+  line-height: 1;
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.albert-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.11);
+}
+
+/* Chat body */
+.albert-chat-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: 17px 15px 14px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(37, 99, 235, 0.045),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #f8fafc 0%, #f4f7fb 100%);
+}
+
+.albert-chat-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.albert-chat-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.albert-chat-body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.albert-message {
+  display: flex;
+  margin-bottom: 11px;
+  animation: albertMessageIn 0.18s ease both;
+}
+
+@keyframes albertMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.albert-message.is-user {
+  justify-content: flex-end;
+}
+
+.albert-message.is-assistant {
+  justify-content: flex-start;
+}
+
+.albert-message.is-assistant .albert-bubble {
+  width: fit-content;
+  max-width: 91%;
+}
+
+.albert-message.is-user .albert-bubble {
+  max-width: 82%;
+  font-weight: 570;
+}
+
+.albert-bubble {
+  max-width: 88%;
+  padding: 13px 15px;
+  border-radius: 17px;
+
+  font-size: 13.6px;
+  line-height: 1.68;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  box-shadow: 0 7px 20px rgba(15, 23, 42, 0.06);
+}
+
+.albert-message.is-user .albert-bubble {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #1746c8 100%);
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 9px 23px rgba(37, 99, 235, 0.2);
+}
+
+.albert-message.is-assistant .albert-bubble {
+  color: #1f2a3d;
+  background: rgba(255, 255, 255, 0.99);
+  border: 1px solid #dbe4f0;
+  border-bottom-left-radius: 6px;
+}
+
+.albert-message.is-assistant .albert-bubble p {
+  margin: 0 0 0.72em;
+}
+
+.albert-message.is-assistant .albert-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.albert-message.is-assistant .albert-bubble strong {
+  color: #0f172a;
+  font-weight: 780;
+}
+
+.albert-message.is-assistant .albert-bubble ul,
+.albert-message.is-assistant .albert-bubble ol {
+  margin: 0.55em 0 0.2em;
+  padding-left: 1.25rem;
+}
+
+.albert-message.is-assistant .albert-bubble li {
+  margin-bottom: 0.35em;
+}
+
+.albert-message.is-assistant .albert-bubble code {
+  padding: 0.12em 0.36em;
+  border-radius: 6px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+  font-size: 0.92em;
+}
+
+/* Initial smart questions */
+.albert-quick-start {
+  margin: 3px 0 4px;
+  padding: 12px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(239, 246, 255, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.065);
+}
+
+.albert-quick-start-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-bottom: 9px;
+}
+
+.albert-quick-start-heading span {
+  color: #0f172a;
+  font-size: 11.25px;
+  font-weight: 840;
+}
+
+.albert-quick-start-heading small {
+  color: #94a3b8;
+  font-size: 9.5px;
+  font-weight: 680;
+}
+
+.albert-quick-start-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.albert-quick-start-grid button {
+  min-width: 0;
+  min-height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+
+  padding: 0 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 11px;
+
+  color: #1e40af;
+  cursor: pointer;
+  background: #ffffff;
+
+  font-size: 10.5px;
+  font-weight: 780;
+  text-align: left;
+
+  transition:
+    color 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+.albert-quick-start-grid button:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.albert-quick-start-grid button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.albert-quick-start-grid button svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  transition: transform 0.16s ease;
+}
+
+.albert-quick-start-grid button:hover {
+  color: #ffffff;
+  border-color: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1746c8);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.albert-quick-start-grid button:hover svg {
+  transform: translateX(2px);
+}
+
+/* Typing */
+.albert-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  min-width: 56px;
+  min-height: 38px;
+}
+
+.albert-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: albertTyping 1s infinite ease-in-out;
+}
+
+.albert-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.albert-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes albertTyping {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.42;
+  }
+
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Direct portfolio navigation */
+.albert-portfolio-navigation {
+  flex: 0 0 auto;
+  padding: 9px 12px 11px;
+
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.albert-portfolio-navigation-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+
+.albert-portfolio-navigation-top span {
+  color: #0f172a;
+  font-size: 11.25px;
+  font-weight: 840;
+  letter-spacing: -0.01em;
+}
+
+.albert-portfolio-navigation-top small {
+  color: #94a3b8;
+  font-size: 9.25px;
+  font-weight: 680;
+}
+
+.albert-portfolio-navigation-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.albert-portfolio-navigation-link {
+  min-width: 0;
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 0 7px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+
+  color: #1e40af;
+  text-decoration: none;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(239, 246, 255, 0.98),
+      rgba(255, 255, 255, 0.98)
+    );
+
+  font-size: 10px;
+  font-weight: 780;
+  white-space: nowrap;
+
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.045);
+
+  transition:
+    color 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+.albert-portfolio-navigation-link:nth-child(-n + 3) {
+  grid-column: span 2;
+}
+
+.albert-portfolio-navigation-link:nth-child(n + 4) {
+  grid-column: span 3;
+}
+
+.albert-portfolio-navigation-link span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.albert-portfolio-navigation-link svg {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  transition: transform 0.16s ease;
+}
+
+.albert-portfolio-navigation-link:hover {
+  color: #ffffff;
+  border-color: #2563eb;
+  background: linear-gradient(135deg, #2563eb 0%, #1746c8 100%);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.albert-portfolio-navigation-link:hover svg {
+  transform: translateX(2px);
+}
+
+.albert-portfolio-navigation-link:focus-visible,
+.albert-quick-start-grid button:focus-visible {
+  outline: 3px solid rgba(96, 165, 250, 0.38);
+  outline-offset: 2px;
+}
+
+/* Footer */
+.albert-chat-footer {
+  flex: 0 0 auto;
+  padding: 12px 12px 10px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.albert-chat-form {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.albert-chat-form:focus-within {
+  background: #ffffff;
+  border-color: rgba(37, 99, 235, 0.56);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.albert-chat-form input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  padding: 0 8px 0 11px;
+  border: 0;
+  outline: 0;
+  color: #0f172a;
+  background: transparent;
+  font-size: 13.9px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.albert-chat-form input::placeholder {
+  color: #94a3b8;
+}
+
+.albert-chat-form input:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+.albert-chat-form button {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #2563eb 0%, #1746c8 100%);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.24);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.albert-chat-form button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.3);
+}
+
+.albert-chat-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.albert-chat-form button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.albert-powered-by {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.albert-powered-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #2563eb;
+}
+
+/* Kommo-style contact dock */
+.albert-channel-dock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.albert-channel-dock::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  z-index: -1;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0);
+  box-shadow: none;
+  pointer-events: none;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.albert-channel-dock.is-open::before {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 18px 55px rgba(15, 23, 42, 0.14),
+    0 4px 14px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.albert-main-launcher {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.2), transparent 34%),
+    linear-gradient(145deg, #07111f 0%, #12306b 56%, #2563eb 100%);
+  box-shadow:
+    0 20px 52px rgba(37, 99, 235, 0.34),
+    0 8px 20px rgba(2, 6, 23, 0.16);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.albert-main-launcher:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 26px 64px rgba(37, 99, 235, 0.42),
+    0 10px 24px rgba(2, 6, 23, 0.18);
+}
+
+.albert-main-launcher.is-close {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  color: #6d5ce7;
+  background: #ffffff;
+  border: 2px solid #c4b5fd;
+  border-radius: 16px;
+  box-shadow: 0 16px 35px rgba(76, 29, 149, 0.2);
+}
+
+.albert-main-launcher-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  color: #dbeafe;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.albert-main-launcher.is-close .albert-main-launcher-icon {
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+}
+
+.albert-main-launcher-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.albert-launcher-message {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  min-width: 116px;
+  padding: 12px 18px;
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 15px;
+  color: #101828;
+  background: rgba(255, 255, 255, 0.98);
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateY(-50%);
+  box-shadow:
+    0 16px 38px rgba(15, 23, 42, 0.14),
+    0 4px 12px rgba(15, 23, 42, 0.07);
+  animation: albertTalkBubbleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.albert-launcher-message::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-top: 1px solid rgba(226, 232, 240, 0.96);
+  border-right: 1px solid rgba(226, 232, 240, 0.96);
+  transform: translate(-5px, -50%) rotate(45deg);
+}
+
+@keyframes albertTalkBubbleIn {
+  from {
+    opacity: 0;
+    transform: translate(-8px, -50%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+.albert-channel-options {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 0;
+  opacity: 0;
+  overflow: visible;
+  pointer-events: none;
+  transform: translateX(12px) scale(0.96);
+  transform-origin: right center;
+  transition:
+    max-width 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease,
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.albert-channel-dock.is-open .albert-channel-options {
+  max-width: 228px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
+
+.albert-channel-dock.is-open .albert-channel-button:nth-child(1) {
+  animation: albertChannelIn 0.2s 0.02s both;
+}
+
+.albert-channel-dock.is-open .albert-channel-button:nth-child(2) {
+  animation: albertChannelIn 0.2s 0.06s both;
+}
+
+.albert-channel-dock.is-open .albert-channel-button:nth-child(3) {
+  animation: albertChannelIn 0.2s 0.1s both;
+}
+
+@keyframes albertChannelIn {
+  from {
+    opacity: 0;
+    transform: translateX(9px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.albert-channel-button {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.2);
+  transition:
+    transform 0.16s ease,
+    filter 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.albert-channel-button:hover {
+  transform: translateY(-4px);
+  filter: saturate(1.08);
+  box-shadow: 0 20px 38px rgba(15, 23, 42, 0.24);
+}
+
+.albert-channel-button svg {
+  width: 25px;
+  height: 25px;
+}
+
+.albert-channel-button.is-ai {
+  background: linear-gradient(135deg, #2563eb 0%, #1746c8 100%);
+}
+
+.albert-channel-button.is-gmail {
+  color: #111827;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.albert-channel-button.is-gmail svg {
+  width: 31px;
+  height: 31px;
+}
+
+.albert-channel-button.is-whatsapp {
+  background: linear-gradient(135deg, #38d66b 0%, #22c55e 52%, #16a34a 100%);
+}
+
+.albert-channel-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 9px);
+  min-width: max-content;
+  padding: 7px 10px;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: #ffffff;
+  background: #0f172a;
+  font-size: 10.5px;
+  line-height: 1.05;
+  font-weight: 800;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 5px);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+}
+
+.albert-channel-tooltip strong {
+  font-size: 10.5px;
+  font-weight: 850;
+}
+
+.albert-channel-tooltip small {
+  color: rgba(226, 232, 240, 0.82);
+  font-size: 9.5px;
+  font-weight: 650;
+}
+
+.albert-channel-tooltip.is-email {
+  align-items: flex-start;
+}
+
+.albert-channel-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  border: 5px solid transparent;
+  border-top-color: #0f172a;
+  transform: translateX(-50%);
+}
+
+.albert-channel-button:hover .albert-channel-tooltip,
+.albert-channel-button:focus-visible .albert-channel-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.albert-main-launcher:focus-visible,
+.albert-channel-button:focus-visible,
+.albert-header-icon-button:focus-visible,
+.albert-suggestions button:focus-visible,
+.albert-chat-form button:focus-visible {
+  outline: 3px solid rgba(96, 165, 250, 0.42);
+  outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .albert-chat-widget {
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: auto;
+    height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 24px;
+  }
+
+  .albert-chat-header {
+    padding: 9px 11px 10px;
+  }
+
+  .albert-header-bar {
+    grid-template-columns: 35px minmax(0, 1fr) 35px;
+    gap: 8px;
+  }
+
+  .albert-header-icon-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+  }
+
+  .albert-brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .albert-brand-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .albert-brand-copy strong {
+    font-size: 13.2px;
+  }
+
+  .albert-brand-copy span {
+    font-size: 9.4px;
+  }
+
+  .albert-header-copy h2 {
+    font-size: 17px;
+  }
+
+  .albert-header-copy p {
+    font-size: 10px;
+  }
+
+  .albert-header-intro {
+    margin-top: 8px;
+    padding-top: 8px;
+    gap: 8px;
+  }
+
+  .albert-status {
+    height: 25px;
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .albert-chat-body {
+    padding: 14px 11px 10px;
+  }
+
+  .albert-bubble {
+    max-width: 92%;
+    padding: 12px 14px;
+    font-size: 13.35px;
+    line-height: 1.64;
+  }
+
+  .albert-message.is-assistant .albert-bubble {
+    max-width: 94%;
+  }
+
+  .albert-message.is-user .albert-bubble {
+    max-width: 86%;
+  }
+
+  .albert-portfolio-navigation {
+    padding: 8px 10px 10px;
+  }
+
+  .albert-portfolio-navigation-top {
+    margin-bottom: 7px;
+  }
+
+  .albert-portfolio-navigation-link {
+    min-height: 33px;
+    font-size: 9.7px;
+  }
+
+  .albert-quick-start {
+    padding: 10px;
+  }
+
+  .albert-quick-start-grid button {
+    min-height: 38px;
+  }
+
+  .albert-chat-footer {
+    padding: 10px 10px 8px;
+  }
+
+  .albert-channel-dock {
+    right: 16px;
+    bottom: 16px;
+    gap: 8px;
+  }
+
+  .albert-main-launcher {
+    width: 58px;
+    height: 58px;
+    min-width: 58px;
+  }
+
+  .albert-main-launcher-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .albert-launcher-message {
+    right: calc(100% + 10px);
+    min-width: 102px;
+    padding: 11px 15px;
+    font-size: 13px;
+  }
+
+  .albert-main-launcher.is-close,
+  .albert-channel-button {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 15px;
+  }
+
+  .albert-channel-dock.is-open .albert-channel-options {
+    max-width: 218px;
+  }
+
+  .albert-channel-tooltip {
+    bottom: calc(100% + 8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .albert-chat-root *,
+  .albert-chat-root *::before,
+  .albert-chat-root *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

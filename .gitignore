@@ -2,4 +2,14 @@
 dist
 build
 .env
+.env.*
+!.env.example
+.cms-data/
+.cms-backups/
+.cms-exports/
+.cms-build/
+.cms-restores/
 .DS_Store
+.aws-build/
+__pycache__/
+*.py[cod]

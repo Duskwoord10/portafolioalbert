@@ -1,0 +1,31 @@
+.cookie-panel, .cookie-preferences { font-family: inherit; }
+.cookie-panel { position: fixed; z-index: 200; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; width: min(990px, calc(100% - 32px)); padding: 22px 24px; color: #f5f8ff; background: linear-gradient(120deg, #14233b, #0d182b); border: 1px solid rgba(143, 181, 240, .35); border-radius: 18px; box-shadow: 0 22px 70px rgba(0, 0, 0, .5); }
+.cookie-panel__icon { display: grid; flex: 0 0 48px; place-items: center; height: 48px; color: #9dc8ff; background: rgba(73, 126, 220, .19); border-radius: 12px; }
+.cookie-panel__content { flex: 1; min-width: 0; }
+.cookie-panel__heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cookie-panel h2 { color: #fff; font-size: 16px; line-height: 1.3; margin: 0 0 6px; letter-spacing: -.01em; }
+.cookie-panel p { color: #afbed2; font-size: 12px; line-height: 1.6; margin: 0; }
+.cookie-panel__detail { display: flex; align-items: center; gap: 7px; color: #8bb7f6; font-size: 11px; margin-top: 9px; }
+.cookie-panel__actions { display: flex; flex: 0 0 auto; gap: 9px; }
+.cookie-panel__actions button { min-height: 40px; padding: 9px 14px; border-radius: 9px; font: inherit; font-size: 12px; font-weight: 750; white-space: nowrap; cursor: pointer; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+.cookie-panel__actions button:hover { transform: translateY(-2px); }
+.cookie-panel__secondary { color: #d7e5f7; background: rgba(255,255,255,.035); border: 1px solid rgba(170, 195, 231, .26); }
+.cookie-panel__secondary:hover { border-color: rgba(170, 195, 231, .55); }
+.cookie-panel__primary { color: #fff; background: #336bd7; border: 1px solid #4b85eb; }
+.cookie-panel__primary:hover { background: #427ce9; }
+.cookie-panel__close { display: grid; place-items: center; padding: 3px; border: 0; background: transparent; color: #aebed3; cursor: pointer; }
+.cookie-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-top:15px; }
+.cookie-options label { display:flex; align-items:flex-start; gap:9px; min-height:66px; padding:11px; border:1px solid rgba(170,195,231,.17); border-radius:11px; background:rgba(255,255,255,.035); cursor:pointer; }
+.cookie-options label:has(input:checked) { border-color:rgba(100,165,245,.55); background:rgba(45,105,190,.13); }
+.cookie-options input { flex:none; margin:2px 0 0; accent-color:#5da1ff; }
+.cookie-options strong,.cookie-options small { display:block; }
+.cookie-options strong { color:#eaf3ff; font-size:11px; }
+.cookie-options small { margin-top:4px; color:#9db0ca; font-size:10px; line-height:1.4; }
+.cookie-panel__actions { flex-wrap:wrap; justify-content:flex-end; }
+.cookie-panel__actions button { min-height:38px; padding:8px 11px; }
+.cookie-preferences { position: fixed; z-index: 90; bottom: 20px; left: 20px; display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 9px; border: 1px solid rgba(145, 177, 231, .24); background: rgba(15, 27, 47, .94); box-shadow: 0 8px 26px rgba(0,0,0,.24); color: #bdcfe7; font-size: 11px; font-weight: 700; cursor: pointer; }
+.cookie-preferences:hover { color: #fff; border-color: #70a4f5; }
+.cookie-panel button:focus-visible, .cookie-preferences:focus-visible { outline: 2px solid #9bc5ff; outline-offset: 3px; }
+@media (max-width: 800px) { .cookie-panel { align-items: flex-start; flex-wrap: wrap; gap: 13px; }.cookie-panel__content { flex-basis: calc(100% - 65px); }.cookie-panel__actions { width: 100%; padding-left: 61px; }.cookie-options { grid-template-columns:1fr; } }
+@media (max-width: 520px) { .cookie-panel { bottom: 12px; padding: 18px; }.cookie-panel__icon { width: 39px; height: 39px; flex-basis: 39px; }.cookie-panel__content { flex-basis: calc(100% - 52px); }.cookie-panel__actions { padding-left: 0; }.cookie-panel__actions button { flex: 1; padding: 9px 8px; font-size: 11px; }.cookie-preferences { left: 12px; bottom: 12px; } }
+@media (prefers-reduced-motion: reduce) { .cookie-panel__actions button { transition: none; } }

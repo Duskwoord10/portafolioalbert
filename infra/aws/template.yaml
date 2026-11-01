@@ -1,0 +1,262 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: CMS API and private persistence for Albert Sanfle, isolated by stack and environment
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: staging
+    AllowedValues: [staging, production]
+  PublicOrigin:
+    Type: String
+    AllowedPattern: '^https://[^/]+$'
+    Description: Explicit HTTPS origin for this environment; use staging origin in staging.
+  AdminOrigin:
+    Type: String
+    AllowedPattern: '^https://[^/]+$'
+    Description: Explicit HTTPS admin origin for this environment.
+  TemporaryAdminOrigin:
+    Type: String
+    Default: ''
+    AllowedPattern: '^(|https://d[a-z0-9]+\.cloudfront\.net)$'
+    Description: Optional temporary hostname of the same admin CloudFront distribution during DNS propagation.
+  AdditionalPublicOrigin:
+    Type: String
+    Default: ''
+    AllowedPattern: '^(|https://[^/]+)$'
+    Description: Optional second public HTTPS origin, e.g. www host.
+  BudgetEmail:
+    Type: String
+    Default: ''
+    Description: Optional verified email for account-wide staging budget alerts.
+  MonthlyBudgetUsd:
+    Type: Number
+    Default: 5
+    MinValue: 1
+  TotpKeyParameterName:
+    Type: String
+    AllowedPattern: '^/albert-cms/(staging|production)/[a-zA-Z0-9/_-]+$'
+    Description: Name of an existing SSM SecureString containing the 32-byte hex MFA key.
+  RecoveryFromEmail:
+    Type: String
+    Default: no-reply@albertsanfle.com
+    AllowedPattern: '^[^@]+@albertsanfle\.com$'
+    Description: Sender within the existing verified SES domain for one-time recovery codes.
+  ChatbotFunctionArn:
+    Type: String
+    Default: ''
+    AllowedPattern: '^(|arn:aws:lambda:us-east-1:[0-9]{12}:function:[A-Za-z0-9_-]+(:[A-Za-z0-9_-]+)?)$'
+    Description: Optional exact chatbot Lambda ARN; configured for production only.
+
+Conditions:
+  HasBudgetEmail: !Not [!Equals [!Ref BudgetEmail, '']]
+  HasChatbotFunction: !Not [!Equals [!Ref ChatbotFunctionArn, '']]
+
+Rules:
+  MatchingEnvironmentKey:
+    Assertions:
+      - Assert: !Or
+          - !And
+            - !Equals [!Ref EnvironmentName, production]
+            - !Equals [!Ref TotpKeyParameterName, /albert-cms/production/totp-key]
+          - !And
+            - !Equals [!Ref EnvironmentName, staging]
+            - !Equals [!Ref TotpKeyParameterName, /albert-cms/staging/totp-key]
+        AssertDescription: MFA key parameter path must match the CMS environment.
+
+Resources:
+  CmsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: pk, AttributeType: S }
+        - { AttributeName: sk, AttributeType: S }
+        - { AttributeName: gsi1pk, AttributeType: S }
+        - { AttributeName: gsi1sk, AttributeType: S }
+      KeySchema:
+        - { AttributeName: pk, KeyType: HASH }
+        - { AttributeName: sk, KeyType: RANGE }
+      GlobalSecondaryIndexes:
+        - IndexName: gsi1
+          KeySchema:
+            - { AttributeName: gsi1pk, KeyType: HASH }
+            - { AttributeName: gsi1sk, KeyType: RANGE }
+          Projection: { ProjectionType: ALL }
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+      SSESpecification: { SSEEnabled: true }
+      Tags:
+        - { Key: Project, Value: AlbertSanfleCMS }
+        - { Key: Environment, Value: !Ref EnvironmentName }
+
+  CmsMedia:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 }
+      VersioningConfiguration: { Status: Enabled }
+      OwnershipControls:
+        Rules:
+          - { ObjectOwnership: BucketOwnerEnforced }
+      Tags:
+        - { Key: Project, Value: AlbertSanfleCMS }
+        - { Key: Environment, Value: !Ref EnvironmentName }
+
+  CmsHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: '$default'
+      DisableExecuteApiEndpoint: false
+      Tags: { Project: AlbertSanfleCMS, Environment: !Ref EnvironmentName }
+
+  CmsApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../.aws-build
+      Handler: lambda.handler
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      MemorySize: 512
+      Timeout: 20
+      ReservedConcurrentExecutions: 2
+      Tags: { Project: AlbertSanfleCMS, Environment: !Ref EnvironmentName }
+      Environment:
+        Variables:
+          NODE_ENV: production
+          CMS_DATA_BACKEND: dynamodb
+          CMS_ENVIRONMENT: !Ref EnvironmentName
+          CMS_MEDIA_BACKEND: s3
+          CMS_DYNAMODB_TABLE: !Ref CmsTable
+          CMS_S3_BUCKET: !Ref CmsMedia
+          CMS_TOTP_KEY_PARAMETER: !Ref TotpKeyParameterName
+          CMS_PUBLIC_ORIGIN: !Ref PublicOrigin
+          CMS_ADDITIONAL_PUBLIC_ORIGIN: !Ref AdditionalPublicOrigin
+          CMS_ADMIN_ORIGIN: !Ref AdminOrigin
+          CMS_TEMP_ADMIN_ORIGIN: !Ref TemporaryAdminOrigin
+          CMS_SITE_URL: !Ref PublicOrigin
+          CMS_RECOVERY_FROM_EMAIL: !Ref RecoveryFromEmail
+          CMS_CHATBOT_FUNCTION_ARN: !Ref ChatbotFunctionArn
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: ssm:GetParameter
+              Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${TotpKeyParameterName}'
+            - Effect: Allow
+              Action: ses:SendEmail
+              Resource: !Sub 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/albertsanfle.com'
+              Condition:
+                StringEquals:
+                  ses:FromAddress: !Ref RecoveryFromEmail
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource:
+                - !GetAtt CmsTable.Arn
+                - !Sub '${CmsTable.Arn}/index/gsi1'
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+              Resource: !Sub '${CmsMedia.Arn}/media/*'
+            - Effect: Allow
+              Action: translate:TranslateText
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  aws:RequestedRegion: !Ref AWS::Region
+            - !If
+              - HasChatbotFunction
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !Ref ChatbotFunctionArn
+              - !Ref AWS::NoValue
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref CmsHttpApi
+            Path: /api/{proxy+}
+            Method: ANY
+        Sitemap:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref CmsHttpApi
+            Path: /sitemap.xml
+            Method: GET
+
+  CmsApiLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${CmsApi}'
+      RetentionInDays: 14
+      Tags:
+        - { Key: Project, Value: AlbertSanfleCMS }
+        - { Key: Environment, Value: !Ref EnvironmentName }
+
+  CmsApiErrors:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: CMS API Lambda errors in a five-minute window
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref CmsApi
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 0
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      Tags:
+        - { Key: Project, Value: AlbertSanfleCMS }
+        - { Key: Environment, Value: !Ref EnvironmentName }
+
+  CmsBudget:
+    Type: AWS::Budgets::Budget
+    Condition: HasBudgetEmail
+    Properties:
+      Budget:
+        BudgetName: !Sub '${AWS::StackName}-monthly-cost'
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        CostFilters:
+          TagKeyValue: ['user:Project$AlbertSanfleCMS']
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetUsd
+          Unit: USD
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref BudgetEmail
+
+Outputs:
+  ApiUrl:
+    Value: !Sub 'https://${CmsHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}'
+  TableName:
+    Value: !Ref CmsTable
+  MediaBucket:
+    Value: !Ref CmsMedia

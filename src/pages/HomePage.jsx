@@ -1,36 +1,53 @@
-"use client"
-import { useEffect } from "react"
-import Hero from "../components/Hero.jsx"
-import { Container } from "../components/ui.jsx"
-import "./HomePage.css"
+"use client";
+import { useEffect, useState } from "react";
+import Hero from "../components/Hero.jsx";
+import { Container } from "../components/ui.jsx";
+import { getCookiePreferences } from "../components/cookieConsent.js";
+import { usePublicContent } from "../cms/usePublicContent.js";
+import { ContentBlocks } from "../cms/PublicContent.jsx";
+import { HOME_FALLBACK_ROWS } from "../content/publicFallbacks.js";
+import "./HomePage.css";
 
 export default function HomePage() {
+  const homeRows = usePublicContent('home', HOME_FALLBACK_ROWS);
+  const home = homeRows[0]?.data || {};
+  const [allowLinkedIn, setAllowLinkedIn] = useState(() => getCookiePreferences()?.externalMedia === true);
+
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://platform.linkedin.com/badges/js/profile.js"
-    script.async = true
-    script.defer = true
-    script.type = "text/javascript"
-    document.body.appendChild(script)
+    const updateChoice = (event) => setAllowLinkedIn(event.detail?.externalMedia === true);
+    window.addEventListener("as-cookie-choice", updateChoice);
+    return () => window.removeEventListener("as-cookie-choice", updateChoice);
+  }, []);
+
+  useEffect(() => {
+    if (!allowLinkedIn || home.showSocial === false) return undefined;
+    const script = document.createElement("script");
+    script.src = "https://platform.linkedin.com/badges/js/profile.js";
+    script.async = true;
+    script.defer = true;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
 
     return () => {
-      const scripts = document.querySelectorAll('script[src*="platform.linkedin.com"]')
-      scripts.forEach((s) => s.remove())
-    }
-  }, [])
+      const scripts = document.querySelectorAll(
+        'script[src*="platform.linkedin.com"]',
+      );
+      scripts.forEach((s) => s.remove());
+    };
+  }, [allowLinkedIn, home.showSocial]);
 
   return (
     <>
       <Hero />
 
-      <section className="quote-section">
+      {home.showQuote !== false && <section className="quote-section">
         <Container>
           <div className="quote-container">
             <div className="quote-image-wrapper">
               <div className="quote-image-glow"></div>
               <img
-                src="https://albertsanflepage.s3.us-east-1.amazonaws.com/media/billgatefoto2.jpg"
-                alt="Bill Gates"
+                src={home.quoteImage}
+                alt={home.quoteAuthor}
                 className="quote-image"
               />
             </div>
@@ -41,39 +58,45 @@ export default function HomePage() {
                 </svg>
               </div>
               <blockquote className="quote-text">
-                "El éxito es un pésimo maestro. Seduce a la gente inteligente a pensar que no puede perder."
+                {home.quoteText}
               </blockquote>
               <div className="quote-divider"></div>
               <p className="quote-subtext">
-                "La humildad y el aprendizaje constante son las claves para mantenerse relevante en el mundo de la
-                tecnología."
+                {home.quoteSubtext}
               </p>
               <div className="quote-author">
-                <span className="author-name">Bill Gates</span>
-                <span className="author-title">Fundador de Microsoft</span>
+                <span className="author-name">{home.quoteAuthor}</span>
+                <span className="author-title">{home.quoteAuthorTitle}</span>
               </div>
             </div>
           </div>
         </Container>
-      </section>
+      </section>}
 
-      <section className="social-section">
+      {home.showSocial !== false && <section className="social-section">
         <Container>
           <div className="social-header">
             <div className="social-icon-animated">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
             </div>
-            <h3 className="social-title">Sígueme en mis redes sociales</h3>
-            <p className="social-subtitle">Conéctate conmigo y mantente al día con mis proyectos y contenido tech.</p>
+            <h3 className="social-title">{home.socialHeading}</h3>
+            <p className="social-subtitle">
+              {home.socialSubtitle}
+            </p>
           </div>
 
           <div className="social-cards-container">
             {/* Instagram Card */}
             <a
-              href="https://www.instagram.com/albertsanfle_07/"
+              href={home.instagram || undefined}
               target="_blank"
               rel="noreferrer"
               className="social-card instagram-card"
@@ -83,7 +106,7 @@ export default function HomePage() {
               <div className="social-card-header">
                 <div className="avatar-ring instagram-ring">
                   <img
-                    src="https://albertsanflepage.s3.us-east-1.amazonaws.com/media/albertsanfleinstagramfoto.jpg"
+                    src={home.instagramPhoto}
                     alt="Albert Sanfle Instagram"
                     className="avatar-img"
                   />
@@ -96,29 +119,19 @@ export default function HomePage() {
               </div>
 
               <div className="social-info">
-                <h4 className="social-handle">@albertsanfle_07</h4>
-                <p className="social-name">Albert Sanfle</p>
-                <p className="social-desc">DevOps Engineer | AWS</p>
-              </div>
-
-              <div className="social-stats">
-                <div className="stat">
-                  <span className="stat-num">19</span>
-                  <span className="stat-text">Posts</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-num">1.3K</span>
-                  <span className="stat-text">Seguidores</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-num">680</span>
-                  <span className="stat-text">Seguidos</span>
-                </div>
+                <h4 className="social-handle">{home.instagramHandle}</h4>
+                <p className="social-name">{home.name || ''}</p>
+                <p className="social-desc">{home.instagramDescription}</p>
               </div>
 
               <div className="follow-btn instagram-btn">
                 <span>Seguir en Instagram</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </div>
@@ -131,7 +144,7 @@ export default function HomePage() {
               <div className="social-card-header">
                 <div className="avatar-ring linkedin-ring">
                   <img
-                    src="https://albertsanflepage.s3.us-east-1.amazonaws.com/media/albertsanfleportafolioimagen.jpg"
+                    src={home.linkedinPhoto}
                     alt="Albert Sanfle LinkedIn"
                     className="avatar-img"
                   />
@@ -144,32 +157,38 @@ export default function HomePage() {
               </div>
 
               <div className="social-info">
-                <h4 className="social-handle">Albert Javier Sanfle Lopez</h4>
-                <p className="social-desc linkedin-desc">DevOps Engineer | AWS Certified | CI/CD | SRE</p>
+                <h4 className="social-handle">{home.name || ''}</h4>
+                <p className="social-desc linkedin-desc">
+                  {home.linkedinDescription || home.title || ''}
+                </p>
               </div>
 
               <div className="linkedin-embed">
-                <div
+                {allowLinkedIn ? <div
                   className="badge-base LI-profile-badge"
                   data-locale="en_US"
                   data-size="large"
                   data-theme="dark"
                   data-type="HORIZONTAL"
-                  data-vanity="albert-sanfle-a89209215"
+                  data-vanity={home.linkedinVanity}
                   data-version="v1"
                 >
                   <a
                     className="badge-base__link LI-simple-link"
-                    href="https://do.linkedin.com/in/albert-sanfle-a89209215/en?trk=profile-badge"
+                    href={home.linkedin || undefined}
                   >
-                    Albert Javier Sanfle Lopez
+                    {home.name || ''}
                   </a>
-                </div>
+                </div> : <div className="linkedin-cookie-placeholder">
+                  <p>La insignia de LinkedIn está desactivada hasta que permitas sus cookies.</p>
+                  <button type="button" onClick={() => window.dispatchEvent(new Event("as-cookie-open"))}>Configurar cookies</button>
+                </div>}
               </div>
             </div>
           </div>
         </Container>
-      </section>
+      </section>}
+      {home.blocks?.length > 0 && <section className="cms-public"><div className="cms-public-container"><ContentBlocks blocks={home.blocks} /></div></section>}
     </>
-  )
+  );
 }

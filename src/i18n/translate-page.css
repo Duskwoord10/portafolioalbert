@@ -1,0 +1,19 @@
+.aws-translation-status {
+  position: fixed;
+  z-index: 80;
+  right: 20px;
+  bottom: 20px;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 11px 15px;
+  border: 1px solid rgba(96, 165, 250, 0.38);
+  border-radius: 999px;
+  color: #eaf4ff;
+  background: rgba(8, 18, 34, 0.92);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.24);
+  font-size: 12px;
+  backdrop-filter: blur(14px);
+}
+
+.aws-translation-status.is-error {
+  border-color: rgba(248, 113, 113, 0.4);
+}

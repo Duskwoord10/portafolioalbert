@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ACM certificate for the isolated Albert Sanfle CMS production admin hostname
+
+Parameters:
+  HostedZoneId:
+    Type: String
+    Description: Route 53 public hosted zone ID for albertsanfle.com
+    AllowedPattern: '^Z[A-Z0-9]+$'
+
+Resources:
+  AdminCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: auth.albertsanfle.com
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: auth.albertsanfle.com
+          HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - { Key: Project, Value: AlbertSanfleCMS }
+        - { Key: Environment, Value: production }
+
+Outputs:
+  CertificateArn:
+    Value: !Ref AdminCertificate
