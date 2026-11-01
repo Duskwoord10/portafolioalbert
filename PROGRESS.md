@@ -341,3 +341,10 @@ Los informes de la continuación se agregan debajo con archivos y pruebas concre
 - Chatbot: Function URL directa cambió de `NONE` a `AWS_IAM`; verificado HTTP 403 al acceso anónimo y 200 por el proxy CMS.
 - Sin cambios DNS, datos CMS, credenciales ni registros publicados. El contenido de foto existente sigue en el CMS hasta que el administrador elija otra foto y publique. Respaldo de rollback de ambos `index.html`: `.cms-backups/production-before-cms-update-20261101/` (SHA-256 guardados en la sesión).
 - Git: entrega publicada en `origin/Dev` y `origin/Prod` del repositorio solicitado; ambas ramas se mantendrán alineadas al mismo commit.
+# Panel administrativo — rediseño 2026-11-01
+
+- Renovado el frontend del CMS: nueva jerarquía visual, espacio de trabajo claro, navegación azul marino, tarjetas, tablas, formularios, biblioteca y login con estilos consistentes y adaptables a móvil.
+- El identificador de marca ahora es únicamente **AS**, en login y sidebar.
+- Validación: `npm run lint` y build de admin aprobados. Panel, CSS y JS publicados verificados por HTTP 200.
+- AWS: distribución administrativa existente `E2O9QMN5FPIYRA`; invalidación completada `I8Z85AB3XZZ7F6953E4TNJ53NW`. Sin cambios a API, datos, dominio/DNS ni al portafolio público.
+- Git: cambio pendiente de publicar en `Dev` y `Prod`.

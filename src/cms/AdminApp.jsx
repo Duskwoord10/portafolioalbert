@@ -184,7 +184,7 @@ function Login({ onLogin, sessionExpired = false }) {
     finally { setBusy(false) }
   }
   return <main className="cms-login"><div className="cms-login-card">
-    <span className="cms-brand-mark">AS<span>.</span></span>
+    <span className="cms-brand-mark">AS</span>
     <span className="cms-eyebrow">CENTRO ADMINISTRATIVO</span>
     <h1>{recovering ? 'Recuperar acceso.' : 'Bienvenido de nuevo.'}</h1>
     <p>{recovering === 'email' ? 'Solicita un código por correo. Vence en 15 minutos y solo puede utilizarse una vez.' :
@@ -627,7 +627,7 @@ export default function AdminApp() {
   }} />
   if (!session.mfaConfigured) return <MfaSetup session={session} onDone={setSession} />
   return <div className="cms-app"><aside className={`cms-sidebar ${sidebarOpen ? 'cms-sidebar--open' : ''}`}>
-    <div className="cms-sidebar-brand"><span className="cms-brand-mark">AS<span>.</span></span><div><strong>Albert Sanfle</strong><small>Portfolio Manager</small></div></div>
+    <div className="cms-sidebar-brand"><span className="cms-brand-mark">AS</span><div><strong>Albert Sanfle</strong><small>Portfolio Manager</small></div></div>
     <span className="cms-nav-label">ESPACIO DE TRABAJO</span>
     <button className={section === 'dashboard' ? 'active' : ''} onClick={() => select('dashboard')}><Home size={18} /> Vista general</button>
     <button className={section === 'analytics' ? 'active' : ''} onClick={() => select('analytics')}><BarChart3 size={18} /> Analítica web</button>
