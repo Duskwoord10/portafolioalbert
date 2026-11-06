@@ -7,6 +7,7 @@ Actualizado: 2026-11-06. Rediseño del panel y eliminación permanente preparada
 - La biblioteca elimina el objeto y todos sus versionados/delete markers de S3, más el registro DynamoDB; bloquea la operación cuando algún contenido todavía usa el archivo. SQLite local también borra el archivo físico. La interfaz exige confirmación indicando que la operación es irreversible; archivar continúa disponible.
 - Se añadieron permisos IAM mínimos de `ListBucketVersions` limitado a `media/*` y `DeleteObjectVersion` limitado al prefijo multimedia.
 - Lint, build del panel, build Lambda y `sam validate --lint` aprobados. **La actualización de producción está pendiente**: CloudFormation respondió que no puede conectar a `cloudformation.us-east-1.amazonaws.com`; no se publicó el nuevo panel/backend ni se modificó IAM/producción. No se borró ningún dato.
+- El commit local `9a60275` contiene estos cambios. La subida a GitHub quedó pendiente porque los dos intentos no pudieron resolver `github.com`.
 
 Actualizado: 2026-11-06. Imagen de perfil visible desde el primer render.
 

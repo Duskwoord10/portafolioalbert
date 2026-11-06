@@ -7,6 +7,7 @@
 - El borrado de medios comprueba referencias de todos los estados, elimina todas las versiones y marcadores del objeto S3, y después elimina su metadata de DynamoDB. SQLite elimina el archivo local. La interfaz avisa que el borrado es irreversible; archivar conserva su flujo separado.
 - Permisos propuestos en la plantilla: `s3:ListBucketVersions` condicionado a `media/*` y `s3:DeleteObjectVersion` condicionado al mismo prefijo.
 - Lint, build admin, build Lambda y `sam validate --lint` aprobados. No se ejecutó suite automatizada. El despliegue no se realizó: dos lecturas de CloudFormation fallaron por conexión al endpoint regional. Ningún cambio de backend, política IAM, CloudFront, contenido o datos llegó a producción. Para activar este flujo hay que desplegar conjuntamente plantilla IAM, Lambda y panel; no publicar solo el frontend porque la API antigua todavía enviaría DELETE a papelera.
+- Código en commit local `9a60275`; el push a GitHub no se completó porque el DNS del equipo no pudo resolver `github.com` en dos intentos.
 
 ## Primer render de la fotografía de perfil — 06/11/2026
 
