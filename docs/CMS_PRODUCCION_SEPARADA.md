@@ -1,5 +1,13 @@
 # CMS de producción separado: preparación y corte propuesto
 
+## Rediseño del panel y borrado permanente — 06/11/2026
+
+- Refino visual aplicado al dashboard, navegación lateral, cabecera, formularios, listas, tarjetas de medios, estados y responsive móvil.
+- La acción DELETE del contenido ahora elimina fila, reserva de slug e historial de revisiones. Una empresa no puede borrarse mientras alguna experiencia dependa de ella. Los mensajes usan un endpoint administrativo DELETE real y la bandeja los retira luego de éxito.
+- El borrado de medios comprueba referencias de todos los estados, elimina todas las versiones y marcadores del objeto S3, y después elimina su metadata de DynamoDB. SQLite elimina el archivo local. La interfaz avisa que el borrado es irreversible; archivar conserva su flujo separado.
+- Permisos propuestos en la plantilla: `s3:ListBucketVersions` condicionado a `media/*` y `s3:DeleteObjectVersion` condicionado al mismo prefijo.
+- Lint, build admin, build Lambda y `sam validate --lint` aprobados. No se ejecutó suite automatizada. El despliegue no se realizó: dos lecturas de CloudFormation fallaron por conexión al endpoint regional. Ningún cambio de backend, política IAM, CloudFront, contenido o datos llegó a producción. Para activar este flujo hay que desplegar conjuntamente plantilla IAM, Lambda y panel; no publicar solo el frontend porque la API antigua todavía enviaría DELETE a papelera.
+
 ## Primer render de la fotografía de perfil — 06/11/2026
 
 La tarjeta del hero y la sección Sobre mí no mostraban foto en el primer render porque ambos fallbacks tenían `photo: ''`. Cambiado a la última foto original ya publicada (21,153 B, JPEG); el contenido vivo de CMS sustituye ese valor al responder, por lo que el administrador sigue controlando la imagen. Verificación directa de la imagen: HTTP 200, ~0.38 s TTFB. Los hosts `albertsanfle.com` y `www.albertsanfle.com` responden 200 y ninguno redirige al otro; no se aplicó cambio de DNS ni redirect.

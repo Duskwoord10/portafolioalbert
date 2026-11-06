@@ -243,7 +243,7 @@ function MfaSetup({ session, onDone }) {
   </div></main>
 }
 
-function Editor({ kind, value, session, onSaved, onCancel }) {
+function Editor({ kind, value, session, onSaved, onDeleted, onCancel }) {
   const [form, setForm] = useState(() => kind === 'about' ? {
     ...(value || empty()), data:{ ...ABOUT_EDITOR_DEFAULTS, ...(value?.data || {}) },
   } : value || empty())
@@ -415,8 +415,12 @@ function Editor({ kind, value, session, onSaved, onCancel }) {
             try { await cmsFetch(`/admin/${kind}/${form.id}/restore`, { method:'POST', body:JSON.stringify({ revisionId:revision.id }) }, session.csrf)
               const restored = await cmsFetch(`/admin/${kind}/${form.id}`); setForm(restored) } catch (err) { setError(err.message) } }}>
             {new Date(revision.created_at).toLocaleString('es-DO')}</button>)}</div>}
-        <button className="cms-danger" onClick={async () => { if (!window.confirm('¿Mover a la papelera?')) return
-          try { await cmsFetch(`/admin/${kind}/${form.id}`, { method: 'DELETE' }, session.csrf); onCancel() } catch (err) { setError(err.message) } }}><Trash2 size={15} /> Mover a papelera</button></>}
+        <button className="cms-danger cms-danger--solid" disabled={busy} onClick={async () => {
+          if (!window.confirm(`Eliminar definitivamente “${form.title}” y sus versiones? Esta acción no se puede deshacer.`)) return
+          setBusy(true); setError('')
+          try { await cmsFetch(`/admin/${kind}/${form.id}`, { method:'DELETE' }, session.csrf); onDeleted(form.id) }
+          catch (err) { setError(err.message) } finally { setBusy(false) }
+        }}><Trash2 size={15} /> Eliminar definitivamente</button></>}
     </aside></div>
     {picker && <div className="cms-modal-backdrop" role="presentation" onClick={() => setPicker(null)}><div className="cms-modal cms-panel" role="dialog" aria-modal="true" aria-label="Seleccionar archivo" onClick={event => event.stopPropagation()}>
       <div className="cms-inline-head"><h2>Seleccionar archivo</h2><button onClick={() => setPicker(null)} aria-label="Cerrar"><X size={18} /></button></div>
@@ -463,10 +467,10 @@ function MediaLibrary({ session }) {
       alt:item.alt, access:item.access, ...change,
     }) }, session.csrf); await load() } catch (err) { setError(err.message) } finally { setBusy(false) }
   }
-  async function trash(item) {
-    if (!window.confirm(`¿Mover ${item.filename} a la papelera?`)) return
+  async function remove(item) {
+    if (!window.confirm(`Eliminar definitivamente “${item.filename}” y todas sus versiones del almacenamiento? Esta acción no se puede deshacer.`)) return
     setBusy(true); setError('')
-    try { await cmsFetch(`/admin/media/${item.id}`, { method:'DELETE' }, session.csrf); await load() }
+    try { await cmsFetch(`/admin/media/${item.id}`, { method:'DELETE' }, session.csrf); setItems(previous => previous.filter(asset => asset.id !== item.id)) }
     catch (err) { setError(err.message) } finally { setBusy(false) }
   }
   async function restore(item) {
@@ -482,15 +486,15 @@ function MediaLibrary({ session }) {
     <div className="cms-media-grid">{items.map(item => <article className="cms-panel cms-media" key={item.id}>
       {!item.deleted_at && item.mime.startsWith('image/') ? <img src={mediaUrl(item.id)} alt={item.alt || item.filename} /> : <FileText size={42} />}
       <strong>{item.filename}</strong><span>{(item.bytes / 1024).toFixed(1)} KB · {item.deleted_at ? 'Papelera' : item.access === 'public' ? 'Público' : 'Privado'}</span>
-      {item.deleted_at ? <button disabled={busy} onClick={() => restore(item)}>Restaurar</button> : <>
+      {item.deleted_at ? <button disabled={busy} onClick={() => restore(item)}>Restaurar archivo</button> : <>
         <label>Texto alternativo<input value={item.alt || ''} maxLength={250} onChange={event => setItems(previous => previous.map(asset =>
           asset.id === item.id ? { ...asset, alt:event.target.value } : asset))} /></label>
         <button disabled={busy} onClick={() => update(item, {})}>Guardar texto alternativo</button>
         <button disabled={busy} onClick={() => update(item, { access:item.access === 'public' ? 'private' : 'public' })}>
           {item.access === 'public' ? 'Cambiar a privado' : 'Cambiar a público'}</button>
         {item.access === 'public' && <button onClick={() => navigator.clipboard.writeText(new URL(mediaUrl(item.id), window.location.origin).href)}>Copiar URL</button>}
-        <button className="cms-danger" disabled={busy} onClick={() => trash(item)}>Mover a papelera</button>
       </>}
+      <button className="cms-danger cms-danger--solid" disabled={busy} onClick={() => remove(item)}>Eliminar definitivamente</button>
     </article>)}</div>{!items.length && <p className="cms-empty">Todavía no hay archivos.</p>}
     {nextCursor && <button className="cms-primary" disabled={loadingMore} onClick={more}>
       {loadingMore ? 'Cargando…' : 'Cargar más archivos'}</button>}</>
@@ -574,6 +578,13 @@ function Inbox({ session }) {
     await cmsFetch(`/admin/messages/${id}`, { method:'PATCH', body:JSON.stringify({ status:next }) }, session.csrf)
     setSelected(previous => previous && previous.id === id ? { ...previous, status:next } : previous); load()
   } catch (err) { setError(err.message) } }
+  async function removeMessage(item) {
+    if (!window.confirm(`Eliminar definitivamente el mensaje “${item.subject}”? Esta acción no se puede deshacer.`)) return
+    try {
+      await cmsFetch(`/admin/messages/${item.id}`, { method:'DELETE' }, session.csrf)
+      setMessages(previous => previous.filter(message => message.id !== item.id)); setSelected(null)
+    } catch (err) { setError(err.message) }
+  }
   return <><div className="cms-page-head"><div><span className="cms-eyebrow">CONTACTO</span><h1>Bandeja de entrada</h1>
     <p>Mensajes recibidos desde el formulario del portafolio.</p></div></div>
     {error && <p className="cms-error">{error}</p>}
@@ -586,7 +597,7 @@ function Inbox({ session }) {
         <p className="cms-message-body">{selected.message}</p>
         <button onClick={() => status(selected.id, 'pending')}>Marcar pendiente</button>
         <button onClick={() => status(selected.id, 'archived')}>Archivar</button>
-        <button className="cms-danger" onClick={() => { if (window.confirm('¿Enviar a papelera?')) status(selected.id, 'trash') }}>Mover a papelera</button></aside>}</div></>
+        <button className="cms-danger cms-danger--solid" onClick={() => removeMessage(selected)}>Eliminar definitivamente</button></aside>}</div></>
 }
 
 export default function AdminApp() {
@@ -641,14 +652,15 @@ export default function AdminApp() {
     <div className="cms-sidebar-bottom"><span>{session.email}</span><button onClick={() => select('security')}><ShieldCheck size={17} /> Seguridad</button><button onClick={logout}><LogOut size={17} /> Cerrar sesión</button></div>
   </aside><div className="cms-main"><header className="cms-topbar"><button className="cms-mobile-menu" onClick={() => setSidebarOpen(!sidebarOpen)}><Menu size={20} /></button>
     <span>Panel administrativo <ChevronRight size={14} /> {section === 'dashboard' ? 'Vista general' : section === 'analytics' ? 'Analítica web' : info(section)?.label || 'Biblioteca'}</span>
-    <div className="cms-avatar">AS</div></header><main className="cms-content">
+    <div className="cms-topbar-user"><div><strong>{session.email?.split('@')[0]}</strong><small>Administrador</small></div><div className="cms-avatar">AS</div></div></header><main className="cms-content">
       {editing ? <Editor key={editing.id || 'new'} kind={section} value={editing.id ? editing : null} session={session}
-        onSaved={saved => { setEditing(null); setItems(previous => [saved, ...previous.filter(item => item.id !== saved.id)]) }} onCancel={() => setEditing(null)} /> :
+        onSaved={saved => { setEditing(null); setItems(previous => [saved, ...previous.filter(item => item.id !== saved.id)]) }}
+        onDeleted={id => { setEditing(null); setItems(previous => previous.filter(item => item.id !== id)) }} onCancel={() => setEditing(null)} /> :
       section === 'analytics' ? <Analytics session={session} /> : section === 'messages' ? <Inbox session={session} /> : section === 'security' ? <SecurityPage session={session} /> : section === 'media' ? <MediaLibrary session={session} /> :
       section === 'dashboard' ? <><div className="cms-welcome"><span className="cms-eyebrow">PORTAFOLIO / CENTRO DE CONTROL</span>
         <h1>Tu contenido, bajo control.</h1><p>Publica novedades, revisa tus secciones y mantén tu presencia profesional al día.</p></div>
-        <div className="cms-dashboard-grid">{modules.slice(0, 8).map(module => <button className="cms-panel cms-dashboard-card" key={module.kind} onClick={() => select(module.kind)}>
-          <module.icon size={22} /><strong>{module.label}</strong><span>{counts ? (counts[module.kind] || 0) : '—'} registros · Gestionar <ChevronRight size={14} /></span></button>)}</div>
+    <div className="cms-dashboard-grid">{modules.slice(0, 8).map(module => <button className="cms-panel cms-dashboard-card" key={module.kind} onClick={() => select(module.kind)}>
+          <module.icon size={22} /><strong>{module.label}</strong><span><b>{counts ? (counts[module.kind] || 0) : '—'}</b> registros <ChevronRight size={14} /></span><small>Gestionar colección</small></button>)}</div>
         <div className="cms-panel cms-callout"><div><strong>Contenido real y publicación inmediata</strong><p>Los cambios se almacenan en la base de datos y las páginas públicas los consultan mediante la API.</p></div><button onClick={() => select('experience')}>Empezar con experiencia <ChevronRight size={16} /></button></div></> :
       <><div className="cms-page-head"><div><span className="cms-eyebrow">GESTIÓN DE CONTENIDO</span><h1>{info(section)?.label}</h1>
         <p>Crea, edita y publica contenido sin modificar el código del sitio.</p></div>

@@ -416,8 +416,13 @@ const route = async (req, res) => {
     return json(res, 200, await store.messages())
   }
   const messageMatch = path.match(/^\/api\/admin\/messages\/([a-f0-9-]+)$/)
-  if (messageMatch && req.method === 'PATCH') {
+  if (messageMatch && ['PATCH','DELETE'].includes(req.method)) {
     const auth = await requireAdmin(req, res, true); if (!auth) return
+    if (req.method === 'DELETE') {
+      if (!await store.deleteMessage(messageMatch[1])) return error(res, 404, 'Mensaje no encontrado.')
+      await audit(auth.admin_id,'message_delete',messageMatch[1])
+      return json(res,200,{ ok:true })
+    }
     const status = (await parseJson(req)).status
     if (!['pending','read','archived','trash'].includes(status)) return error(res, 400, 'Estado inválido.')
     const changed = await store.updateMessage(messageMatch[1], status)
@@ -555,8 +560,8 @@ const route = async (req, res) => {
       await audit(auth.admin_id, 'media_restore', id)
       return json(res, 200, { ok:true })
     }
-    if (file.deleted_at) return error(res, 409, 'Restaura primero el archivo.')
     if (req.method === 'PATCH' && !action) {
+      if (file.deleted_at) return error(res, 409, 'Restaura primero el archivo.')
       const input = await parseJson(req)
       const alt = String(input.alt ?? file.alt).trim()
       const access = input.access ?? file.access
@@ -570,8 +575,9 @@ const route = async (req, res) => {
     if (req.method === 'DELETE' && !action) {
       if (await store.mediaReferenced(id))
         return error(res, 409, 'El archivo está asociado a contenido; retira primero su referencia.')
-      await store.mediaTrash(id, now())
-      await audit(auth.admin_id, 'media_trash', id)
+      await mediaStorage.delete(file.stored_name)
+      await store.deleteMedia(id)
+      await audit(auth.admin_id, 'media_delete', id)
       return json(res, 200, { ok:true })
     }
   }
@@ -607,8 +613,10 @@ const route = async (req, res) => {
     if (req.method === 'DELETE' && id) {
       const row = await store.content(kind, id)
       if (!row) return error(res, 404, 'Contenido no encontrado.')
-      await store.trashContent(kind, id, auth.admin_id)
-      await audit(auth.admin_id, 'trash', id)
+      if (kind === 'company' && await store.contentReferences('experience', id))
+        return error(res, 409, 'Esta empresa tiene experiencias asociadas. Actualiza o elimina esas experiencias antes.')
+      await store.deleteContent(kind, id)
+      await audit(auth.admin_id, 'content_delete', id)
       return json(res, 200, { ok: true })
     }
     if ((req.method === 'POST' && !id) || (req.method === 'PATCH' && id)) {

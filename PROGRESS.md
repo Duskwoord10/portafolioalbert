@@ -1,5 +1,13 @@
 # Progreso del CMS Albert Sanfle
 
+Actualizado: 2026-11-06. Rediseño del panel y eliminación permanente preparada.
+
+- Se refinó el espacio administrativo: sidebar, jerarquía del dashboard, tarjetas, formularios, listas, botones destructivos, cabecera de usuario y vistas móvil.
+- `DELETE` de contenido elimina el registro, la reserva de URL y las revisiones. Las empresas no se eliminan mientras haya experiencias que las referencien. Los mensajes se eliminan definitivamente desde la bandeja.
+- La biblioteca elimina el objeto y todos sus versionados/delete markers de S3, más el registro DynamoDB; bloquea la operación cuando algún contenido todavía usa el archivo. SQLite local también borra el archivo físico. La interfaz exige confirmación indicando que la operación es irreversible; archivar continúa disponible.
+- Se añadieron permisos IAM mínimos de `ListBucketVersions` limitado a `media/*` y `DeleteObjectVersion` limitado al prefijo multimedia.
+- Lint, build del panel, build Lambda y `sam validate --lint` aprobados. **La actualización de producción está pendiente**: CloudFormation respondió que no puede conectar a `cloudformation.us-east-1.amazonaws.com`; no se publicó el nuevo panel/backend ni se modificó IAM/producción. No se borró ningún dato.
+
 Actualizado: 2026-11-06. Imagen de perfil visible desde el primer render.
 
 - Se comprobó que los fallbacks públicos de Inicio y Sobre mí tenían `photo: ''`; por eso la tarjeta renderizaba un placeholder hasta recibir la API. Ahora usan la última foto original publicada como fallback inmediato y el dato del CMS la reemplaza al llegar. La foto sigue siendo editable desde el panel.

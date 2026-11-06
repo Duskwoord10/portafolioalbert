@@ -1,6 +1,6 @@
-import { createReadStream, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { createReadStream, existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, DeleteObjectsCommand, GetObjectCommand, ListObjectVersionsCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const namePattern = /^[a-f0-9-]+\.(?:jpg|png|webp|avif|pdf)$/
@@ -18,6 +18,11 @@ export function createMediaStorage(options = {}) {
       async get(name) {
         if (!namePattern.test(name) || !existsSync(join(directory, name))) return null
         return { stream: createReadStream(join(directory, name)) }
+      },
+      async delete(name) {
+        if (!namePattern.test(name)) throw new Error('Nombre de archivo invÃ¡lido.')
+        const path = join(directory, name)
+        if (existsSync(path)) unlinkSync(path)
       },
     }
   }
@@ -44,6 +49,26 @@ export function createMediaStorage(options = {}) {
         if (error.name === 'NoSuchKey' || error.name === 'NotFound') return null
         throw error
       }
+    },
+    async delete(name) {
+      const objectKey = key(name)
+      let keyMarker, versionIdMarker, more
+      do {
+        const page = await client.send(new ListObjectVersionsCommand({ Bucket:bucket, Prefix:objectKey,
+          ...(keyMarker ? { KeyMarker:keyMarker } : {}),
+          ...(versionIdMarker ? { VersionIdMarker:versionIdMarker } : {}) }))
+        const versions = [...(page.Versions || []), ...(page.DeleteMarkers || [])]
+          .filter(version => version.Key === objectKey)
+        for (let offset = 0; offset < versions.length; offset += 1000) {
+          await client.send(new DeleteObjectsCommand({ Bucket:bucket, Delete:{
+            Objects:versions.slice(offset, offset + 1000).map(version => ({ Key:objectKey,VersionId:version.VersionId })),
+            Quiet:true,
+          } }))
+        }
+        keyMarker = page.IsTruncated ? page.NextKeyMarker : undefined
+        versionIdMarker = page.IsTruncated ? page.NextVersionIdMarker : undefined
+        more = page.IsTruncated
+      } while (more)
     },
   }
 }

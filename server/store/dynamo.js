@@ -199,6 +199,9 @@ export const store = {
     Item:{ ...key(`MESSAGE#${row.id}`),entity:'messages',...row,gsi1pk:'MESSAGES',
       gsi1sk:`${row.created_at}#${row.id}` },ConditionExpression:'attribute_not_exists(pk)' })) },
   async messages() { return (await gsi('MESSAGES')).sort((a,b) => b.created_at.localeCompare(a.created_at)).slice(0,200) },
+  async deleteMessage(id) { const result=await client.send(new DeleteCommand({ TableName:table,Key:key(`MESSAGE#${id}`),
+    ReturnValues:'ALL_OLD' }));
+    return Boolean(result.Attributes) },
   async updateMessage(id,status) { try { await client.send(new UpdateCommand({ TableName:table,
     Key:key(`MESSAGE#${id}`),UpdateExpression:'SET #status=:status',
     ExpressionAttributeNames:{ '#status':'status' },ExpressionAttributeValues:{ ':status':status },
@@ -271,13 +274,17 @@ export const store = {
     ExpressionAttributeValues:{ ':date':deletedAt },ConditionExpression:'attribute_exists(pk)' })) },
   mediaRestore(id) { return client.send(new UpdateCommand({ TableName:table,
     Key:key(`MEDIA#${id}`),UpdateExpression:'REMOVE deleted_at',ConditionExpression:'attribute_exists(pk)' })) },
+  async deleteMedia(id) { const result=await client.send(new DeleteCommand({ TableName:table,Key:key(`MEDIA#${id}`),
+    ReturnValues:'ALL_OLD' }));
+    return Boolean(result.Attributes) },
   async mediaReferenced(id) { for(const kind of contentKinds) for(const row of await gsi(`KIND#${kind}`))
-    if(row.status !== 'trash' && row.data_json?.includes(`/api/media/${id}`)) return true; return false },
+    if(row.data_json?.includes(`/api/media/${id}`)) return true; return false },
   async revisions(id) { return (await query({ KeyConditionExpression:'pk=:pk AND begins_with(sk,:prefix)',
     ExpressionAttributeValues:{ ':pk':contentKey(id),':prefix':'REV#' } }))
     .sort((a,b)=>b.created_at.localeCompare(a.created_at)).slice(0,30) },
   async revision(id,contentId) { return (await this.revisions(contentId)).find(row => row.id === id) || null },
   async content(kind,id) { const row=await get(contentKey(id)); return row?.kind === kind ? row : null },
+  async contentReferences(kind,fragment) { return (await gsi(`KIND#${kind}`)).some(row => row.data_json?.includes(fragment)) },
   async contentList(kind) { return (await gsi(`KIND#${kind}`)).sort(byOrder).slice(0,200) },
   async contentCounts() { return Object.fromEntries(await Promise.all(contentKinds.map(async kind => {
     let count=0,next
@@ -308,6 +315,28 @@ export const store = {
   },
   async trashContent(kind,id,adminId) { const prior=await this.content(kind,id); if(!prior) return false
     const row={ ...prior,status:'trash',updated_at:now() }; await saveItem(row,prior,adminId); return true },
+  async deleteContent(kind,id) {
+    const prior=await this.content(kind,id)
+    const revisions=await query({ KeyConditionExpression:'pk=:pk AND begins_with(sk,:prefix)',
+      ExpressionAttributeValues:{ ':pk':contentKey(id),':prefix':'REV#' } })
+    if(prior) {
+      const owner=await this.slugOwner(kind,prior.slug)
+      if(owner && owner !== id) throw conflict()
+      const items=[{ Delete:{ TableName:table,Key:key(contentKey(id)),
+        ConditionExpression:prior.version ? 'version = :version' : '#kind = :kind AND slug = :slug',
+        ...(prior.version ? { ExpressionAttributeValues:{ ':version':prior.version } } : {
+          ExpressionAttributeNames:{ '#kind':'kind' },ExpressionAttributeValues:{ ':kind':kind,':slug':prior.slug } }) } }]
+      if(owner === id) items.push({ Delete:{ TableName:table,Key:key(`SLUG#${kind}#${prior.slug}`,'LOCK'),
+        ConditionExpression:'content_id = :id',ExpressionAttributeValues:{ ':id':id } } })
+      for(const revision of revisions.slice(0,98)) items.push({ Delete:{ TableName:table,Key:key(contentKey(id),revision.sk) } })
+      try { await client.send(new TransactWriteCommand({ TransactItems:items })) }
+      catch(error) { if(error.name === 'TransactionCanceledException') throw conflict(); throw error }
+    }
+    for(let offset=prior ? 98 : 0;offset<revisions.length;offset+=20)
+      await Promise.all(revisions.slice(offset,offset+20).map(revision => client.send(new DeleteCommand({
+        TableName:table,Key:key(contentKey(id),revision.sk) }))))
+    return Boolean(prior)
+  },
   async restoreContent(kind,id,revisionId,adminId) { const prior=await this.content(kind,id)
     const old=await this.revision(revisionId,id); if(!prior || !old) return false
     const row={ ...prior,title:old.title,data_json:old.data_json,status:'draft',updated_at:now() }

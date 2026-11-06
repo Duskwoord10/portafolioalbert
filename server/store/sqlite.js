@@ -80,6 +80,7 @@ export const store = {
     .run(row.id,row.name,row.email,row.subject,row.message,row.status,row.created_at) },
   messages() { return db.prepare('SELECT * FROM messages ORDER BY created_at DESC LIMIT 200').all() },
   updateMessage(id,status) { return db.prepare('UPDATE messages SET status=? WHERE id=?').run(status,id).changes > 0 },
+  deleteMessage(id) { return db.prepare('DELETE FROM messages WHERE id=?').run(id).changes > 0 },
   analytics(since) { return {
     days:db.prepare('SELECT day,SUM(views) AS views FROM pageviews WHERE day>=? GROUP BY day ORDER BY day').all(since),
     pages:db.prepare('SELECT path,SUM(views) AS views FROM pageviews WHERE day>=? GROUP BY path ORDER BY views DESC LIMIT 30').all(since),
@@ -104,11 +105,14 @@ export const store = {
   updateMedia(id,alt,access) { db.prepare('UPDATE media SET alt=?,access=? WHERE id=?').run(alt,access,id) },
   mediaTrash(id,deletedAt) { db.prepare('UPDATE media SET deleted_at=? WHERE id=?').run(deletedAt,id) },
   mediaRestore(id) { db.prepare('UPDATE media SET deleted_at=NULL WHERE id=?').run(id) },
-  mediaReferenced(id) { return Boolean(db.prepare("SELECT id FROM content WHERE status<>'trash' AND data_json LIKE ? LIMIT 1")
+  deleteMedia(id) { return db.prepare('DELETE FROM media WHERE id=?').run(id).changes > 0 },
+  mediaReferenced(id) { return Boolean(db.prepare('SELECT id FROM content WHERE data_json LIKE ? LIMIT 1')
     .get(`%/api/media/${id}%`)) },
   revisions(id) { return db.prepare('SELECT * FROM revisions WHERE content_id=? ORDER BY created_at DESC LIMIT 30').all(id) },
   revision(id,contentId) { return db.prepare('SELECT * FROM revisions WHERE id=? AND content_id=?').get(id,contentId) },
   content(kind,id) { return db.prepare('SELECT * FROM content WHERE kind=? AND id=?').get(kind,id) },
+  contentReferences(kind,fragment) { return Boolean(db.prepare('SELECT id FROM content WHERE kind=? AND data_json LIKE ? LIMIT 1')
+    .get(kind,`%${fragment}%`)) },
   contentList(kind) { return db.prepare('SELECT * FROM content WHERE kind=? ORDER BY sort_order,updated_at DESC LIMIT 200').all(kind) },
   contentCounts() { return Object.fromEntries(db.prepare('SELECT kind,COUNT(*) AS count FROM content GROUP BY kind')
     .all().map(row => [row.kind,row.count])) },
@@ -143,6 +147,12 @@ export const store = {
       db.prepare("UPDATE content SET status='trash',updated_at=? WHERE id=?").run(now(),id)
       return true })
   },
+  deleteContent(kind,id) { return transaction(() => {
+    const row=this.content(kind,id)
+    if(!row) return false
+    db.prepare('DELETE FROM revisions WHERE content_id=?').run(id)
+    return db.prepare('DELETE FROM content WHERE kind=? AND id=?').run(kind,id).changes > 0
+  }) },
   restoreContent(kind,id,revisionId,adminId) {
     return transaction(() => { const row = this.content(kind,id), old = this.revision(revisionId,id)
       if (!row || !old) return false
