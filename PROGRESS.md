@@ -1,5 +1,14 @@
 # Progreso del CMS Albert Sanfle
 
+Actualizado: 2026-11-06. Optimización de carga del portafolio público.
+
+- Las rutas públicas agrupan en una solicitud el contenido publicado necesario para cada página. El endpoint `/api/public/bootstrap` consulta solamente los tipos permitidos y excluye borradores; el cliente conserva compatibilidad con la API anterior si el agregado falla.
+- Sobre mí dejó de disparar seis lecturas independientes. En producción, la lectura agrupada de siete tipos respondió HTTP 200 y ~0,75 s incluyendo red; una consulta caliente previa respondió en 429 ms.
+- Se añadieron JPEG de 1400 px para cinco imágenes de blog, reduciendo cada archivo de 1,88–2,14 MB a 128–177 KB (aprox. 91–94%). Las imágenes originales siguen conservadas. Los artículos con las rutas antiguas PNG usan la variante JPEG optimizada.
+- Las imágenes debajo del primer pliegue usan carga diferida; la foto hero y la imagen destacada del blog tienen prioridad de carga. Las nuevas imágenes subidas desde la biblioteca se comprimen en WebP en el navegador antes del límite de la API, conservando PDF y originales cuando optimizar no ayuda.
+- Publicados los cambios en la Lambda productiva existente y en los buckets/CloudFront de sitio y panel existentes. No se cambió infraestructura, DNS, contenido DynamoDB, autenticación ni recursos de otros proyectos. Respaldo del HTML público: `.cms-backups/public-before-performance-20261106/`; respaldo del panel: `.cms-backups/admin-before-image-optimize-20261106/`; respaldo del paquete Lambda: `.cms-backups/cms-performance-20261106/`. Invalidaciones finales: pública `I9JBPE0JALW6RWRHXM83WDQPPZ`, panel `I37NAAC2HNR58PD22NX95LBPVV`.
+- Verificado por HTTPS: HTML 200 / 649 B / TTFB 0,41 s; `/sobre-mi` 200 / 649 B / TTFB 0,22 s; JS 200 / 407,642 B / TTFB 0,40 s; JPEG AWS 200 / 131,478 B / TTFB 0,27 s; bootstrap de ocho colecciones 200 / 24,864 B / TTFB 0,88 s. Lint y builds público/admin/Lambda aprobados. No se ejecutó suite de pruebas.
+
 Actualizado: 2026-10-28. Editor de perfil y seguridad del chatbot.
 
 - El editor de Sobre mí ahora muestra una vista previa de la foto, permite seleccionarla desde la biblioteca y quitarla antes de publicar. El fallback inicial deja de incluir una URL fotográfica fija; el registro publicado de CMS sigue siendo la fuente de verdad. La página añade navegación directa a formación, competencias, eventos, servicios y tecnologías.

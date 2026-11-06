@@ -8,7 +8,7 @@ import "./BlogPage.css";
 
 export function ArticleArtwork({ article, featured = false }) {
   return <div className={"blog-art blog-art--" + article.theme + (featured ? " blog-art--featured" : "")}>
-    {article.image && <img className="blog-art__image" src={article.image} alt={article.imageAlt} loading={featured ? "eager" : "lazy"} />}
+    {article.image && <img className="blog-art__image" src={article.image} alt={article.imageAlt} loading={featured ? "eager" : "lazy"} decoding="async" fetchPriority={featured ? "high" : "auto"} />}
     <div className="blog-art__shade" aria-hidden="true" />
     <span className="blog-art__code">{article.visualLabel}</span><span className="blog-art__number">{article.number}</span>
   </div>;

@@ -480,6 +480,14 @@ const route = async (req, res) => {
     await audit(auth.admin_id,'recovery_code_rotated',null)
     return json(res,200,{ recoveryCode })
   }
+  if (path === '/api/public/bootstrap' && req.method === 'GET') {
+    const requested = [...new Set((url.searchParams.get('kinds') || '').split(',').filter(Boolean))]
+    if (!requested.length || requested.length > 12 || requested.some(kind => !publicKinds.has(kind)))
+      return error(res, 400, 'Secciones pÃºblicas no vÃ¡lidas.')
+    const contents = Object.fromEntries(await Promise.all(requested.map(async kind =>
+      [kind, (await store.publicContent(kind)).map(publicRow)])))
+    return json(res, 200, { contents })
+  }
   const publicMatch = path.match(/^\/api\/public\/(\w+)(?:\/([^/]+))?$/)
   if (publicMatch && req.method === 'GET') {
     const [, kind, slug] = publicMatch

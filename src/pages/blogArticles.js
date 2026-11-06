@@ -2,7 +2,7 @@ export const categories = ["Todos", "AWS", "DevOps", "IA", "Desarrollo"];
 
 export const articles = [
   {
-    number: "01", slug: "arquitectura-aws-primer-proyecto", category: "AWS", theme: "aws", visualLabel: "CLOUD / 001", image: "/blog/aws-architecture.png", imageAlt: "Infraestructura cloud luminosa con servidores conectados", readTime: 7,
+    number: "01", slug: "arquitectura-aws-primer-proyecto", category: "AWS", theme: "aws", visualLabel: "CLOUD / 001", image: "/blog/aws-architecture.jpg", imageAlt: "Infraestructura cloud luminosa con servidores conectados", readTime: 7,
     title: "De una idea a una arquitectura AWS lista para crecer",
     excerpt: "Una forma práctica de organizar tu primer proyecto cloud: servicios, seguridad, costos y decisiones que conviene tomar desde el inicio.",
     intro: "Una buena arquitectura no empieza eligiendo servicios. Empieza entendiendo qué necesita hacer la aplicación, quién la usará y cómo sabrás si funciona bien.",
@@ -14,7 +14,7 @@ export const articles = [
     ],
   },
   {
-    number: "02", slug: "pipeline-cicd-sin-complicaciones", category: "DevOps", theme: "devops", visualLabel: "PIPELINE / 002", image: "/blog/devops-pipeline.png", imageAlt: "Etapas de un pipeline de despliegue conectadas", readTime: 6,
+    number: "02", slug: "pipeline-cicd-sin-complicaciones", category: "DevOps", theme: "devops", visualLabel: "PIPELINE / 002", image: "/blog/devops-pipeline.jpg", imageAlt: "Etapas de un pipeline de despliegue conectadas", readTime: 6,
     title: "Un pipeline CI/CD sencillo que sí ayuda al equipo",
     excerpt: "Del commit al despliegue con validaciones útiles, entornos claros y una forma segura de volver atrás.",
     intro: "Automatizar un despliegue sirve cuando cada cambio recorre un camino conocido y el equipo recibe respuestas rápidas. El objetivo es reducir errores manuales y hacer visible el estado de cada entrega.",
@@ -25,7 +25,7 @@ export const articles = [
     ],
   },
   {
-    number: "03", slug: "asistente-ia-con-contexto", category: "IA", theme: "ai", visualLabel: "INTELLIGENCE / 003", image: "/blog/ai-assistant.png", imageAlt: "Núcleo de inteligencia artificial conectado a documentos", readTime: 8,
+    number: "03", slug: "asistente-ia-con-contexto", category: "IA", theme: "ai", visualLabel: "INTELLIGENCE / 003", image: "/blog/ai-assistant.jpg", imageAlt: "Núcleo de inteligencia artificial conectado a documentos", readTime: 8,
     title: "Cómo diseñar un asistente de IA con contexto útil",
     excerpt: "Una guía para conectar un asistente con información real, medir sus respuestas y mantener control humano donde importa.",
     intro: "Un asistente útil necesita más que un buen prompt. Debe encontrar información pertinente, mostrar sus límites y permitir comprobar de dónde salió una respuesta.",
@@ -36,7 +36,7 @@ export const articles = [
     ],
   },
   {
-    number: "04", slug: "infraestructura-como-codigo", category: "DevOps", theme: "infra", visualLabel: "INFRA / 004", image: "/blog/infrastructure-code.png", imageAlt: "Bloques de infraestructura ensamblados bajo una nube", readTime: 5,
+    number: "04", slug: "infraestructura-como-codigo", category: "DevOps", theme: "infra", visualLabel: "INFRA / 004", image: "/blog/infrastructure-code.jpg", imageAlt: "Bloques de infraestructura ensamblados bajo una nube", readTime: 5,
     title: "Infraestructura como código sin perder el control",
     excerpt: "Convenciones pequeñas que ayudan a mantener entornos reproducibles, cambios revisables y configuraciones fáciles de entender.",
     intro: "La infraestructura como código permite revisar y repetir cambios, pero el orden del repositorio y la gestión del estado importan tanto como la herramienta elegida.",
@@ -47,7 +47,7 @@ export const articles = [
     ],
   },
   {
-    number: "05", slug: "api-observable-desde-inicio", category: "Desarrollo", theme: "code", visualLabel: "BUILD / 005", image: "/blog/api-observability.png", imageAlt: "Flujos de métricas y trazas alrededor de una API", readTime: 6,
+    number: "05", slug: "api-observable-desde-inicio", category: "Desarrollo", theme: "code", visualLabel: "BUILD / 005", image: "/blog/api-observability.jpg", imageAlt: "Flujos de métricas y trazas alrededor de una API", readTime: 6,
     title: "Una API observable desde el primer endpoint",
     excerpt: "Logs claros, métricas básicas y trazas para investigar problemas sin adivinar qué pasó en producción.",
     intro: "Cuando una API falla, la pregunta no es solo qué error devolvió. También necesitas saber dónde ocurrió, a quién afectó y si el problema está creciendo.",

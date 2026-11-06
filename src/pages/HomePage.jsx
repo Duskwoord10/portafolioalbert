@@ -49,6 +49,8 @@ export default function HomePage() {
                 src={home.quoteImage}
                 alt={home.quoteAuthor}
                 className="quote-image"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="quote-content">
@@ -109,6 +111,8 @@ export default function HomePage() {
                     src={home.instagramPhoto}
                     alt="Albert Sanfle Instagram"
                     className="avatar-img"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="social-badge instagram-badge">
@@ -147,6 +151,8 @@ export default function HomePage() {
                     src={home.linkedinPhoto}
                     alt="Albert Sanfle LinkedIn"
                     className="avatar-img"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="social-badge linkedin-badge-icon">

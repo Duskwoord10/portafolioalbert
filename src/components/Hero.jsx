@@ -173,6 +173,8 @@ export default function Hero() {
                     alt={home.name || 'Fotografía principal'}
                     onError={() => setFailedImageUrl(home.photo)}
                     loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                   />
                 </div>
 

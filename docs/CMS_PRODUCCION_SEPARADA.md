@@ -1,5 +1,15 @@
 # CMS de producción separado: preparación y corte propuesto
 
+## Rendimiento público — 06/11/2026
+
+- Las consultas del contenido publicado se agrupan por ruta en `GET /api/public/bootstrap?kinds=...`. El backend limita los tipos consultables a la lista pública, mapea solo registros publicados y conserva la ruta individual anterior. El frontend tiene fallback a las rutas anteriores si el agregado falla durante una transición.
+- La página Sobre mí pasa de seis lecturas separadas a una. La solicitud de siete colecciones devolvió HTTP 200 y 20,240 B; la latencia medida fue de 429 ms caliente y 0.75 s en una lectura posterior, con variación normal del API.
+- Cinco imágenes editoriales de blog ahora tienen copias JPEG de 1400 px. El tamaño bajó de 1.88–2.14 MB a 128–177 KB. Los PNG originales no se borraron. El frontend reconoce únicamente esas cinco rutas históricas para servir el JPEG equivalente.
+- Las imágenes no críticas son lazy y asíncronas; Hero y la imagen destacada priorizan la descarga. El gestor de medios comprime imágenes grandes a WebP en el navegador antes de enviarlas a la API, si obtiene un ahorro útil.
+- Desplegado sobre la Lambda productiva, bucket `albertsanflepage` y CloudFront público `E15DL0KDZ9463N` existentes. El panel también recibió el compresor WebP en su bucket CloudFront existentes `albert-cms-production-admin-adminbucket-ra3fw2fmbkh6` / `E2O9QMN5FPIYRA`. No se cambió DNS, configuración CloudFront, DynamoDB, staging ni recursos de otras aplicaciones. Respaldos: `.cms-backups/public-before-performance-20261106/`, `.cms-backups/admin-before-image-optimize-20261106/` y `.cms-backups/cms-performance-20261106/`.
+- Invalidaciones finales pública `I9JBPE0JALW6RWRHXM83WDQPPZ` y panel `I37NAAC2HNR58PD22NX95LBPVV` completadas. Verificaciones HTTPS: portada 200, HTML 649 B (TTFB 0.41 s); `/sobre-mi` 200 (TTFB 0.22 s); JS 200, 407,642 B (TTFB 0.40 s); JPEG AWS 200, 131,478 B (TTFB 0.27 s); panel `/admin` 200; bootstrap público con 8 colecciones 200, 24,864 B (TTFB 0.88 s en la última medición). Son mediciones puntuales, no un benchmark sostenido.
+- `npm run lint`, builds general/público/admin/Lambda finalizaron correctamente. No se ejecutó la suite automatizada. Rollback del frontend: restaurar el `index.html` respaldado, invalidar `/` e `/index.html`; los nuevos objetos versionados pueden permanecer sin uso. Rollback del panel: restaurar su `site/index.html` e invalidar `/*`. Rollback de Lambda: restaurar el paquete `lambda-before.zip` en la función `albert-cms-production-api-CmsApi-sweMDR3amqJO`.
+
 ## Editor de foto y proxy del chatbot - 28/10/2026
 
 El editor de Sobre mí ahora ofrece previsualizar, elegir desde la biblioteca multimedia y quitar la foto antes de guardar/publicar. El fallback compilado no trae una URL fotográfica fija; el contenido ya publicado sigue controlando la imagen hasta que se cambie desde el editor. Se añadió una navegación interna para Formación, Competencias, Eventos, Servicios y Tecnologías.

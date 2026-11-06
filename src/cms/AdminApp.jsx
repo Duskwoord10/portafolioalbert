@@ -3,6 +3,7 @@ import { ArrowLeft, BarChart3, BookOpen, BriefcaseBusiness, Building2, ChevronRi
   FolderOpen, GraduationCap, Home, Image, LogOut, Menu, Plus, Save, ShieldCheck,
   Sparkles, Trash2, Upload, X } from 'lucide-react'
 import { cmsFetch, mediaUrl } from './api.js'
+import { optimizeImageFile } from './optimizeImage.js'
 import './admin.css'
 
 const modules = [
@@ -446,7 +447,8 @@ function MediaLibrary({ session }) {
   async function upload(event) {
     const files = [...event.target.files]; if (!files.length) return
     setBusy(true); setError('')
-    try { for (const file of files) {
+    try { for (const original of files) {
+      const file = await optimizeImageFile(original)
       if (file.size > maxUploadBytes) throw new Error(`El archivo ${file.name} supera el límite de ${maxUploadBytes / 1_000_000} MB.`)
       await cmsFetch('/admin/media', {
       method: 'POST', body: file, headers: { 'Content-Type': file.type,
