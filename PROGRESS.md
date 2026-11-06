@@ -1,5 +1,11 @@
 # Progreso del CMS Albert Sanfle
 
+Actualizado: 2026-11-06. Imagen de perfil visible desde el primer render.
+
+- Se comprobó que los fallbacks públicos de Inicio y Sobre mí tenían `photo: ''`; por eso la tarjeta renderizaba un placeholder hasta recibir la API. Ahora usan la última foto original publicada como fallback inmediato y el dato del CMS la reemplaza al llegar. La foto sigue siendo editable desde el panel.
+- La foto original responde HTTP 200, `image/jpeg`, 21,153 bytes y ~0,38 s de TTFB medido directamente. `albertsanfle.com` y `www.albertsanfle.com` responden 200 sin redirigirse uno al otro; no hay redirección de backend que cambie el host.
+- El fallback se compiló y publicó en el bucket público; invalidación `IM1H4NA40A8HRZBXYKI8FRHWH` completada. Confirmados en vivo el HTML 200, el bundle que contiene el URL de la foto y el objeto de imagen 200. Backup previo: `.cms-backups/public-before-profile-firstpaint-20261106/`.
+
 Actualizado: 2026-11-06. Optimización de carga del portafolio público.
 
 - Las rutas públicas agrupan en una solicitud el contenido publicado necesario para cada página. El endpoint `/api/public/bootstrap` consulta solamente los tipos permitidos y excluye borradores; el cliente conserva compatibilidad con la API anterior si el agregado falla.

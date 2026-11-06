@@ -1,5 +1,11 @@
 # CMS de producción separado: preparación y corte propuesto
 
+## Primer render de la fotografía de perfil — 06/11/2026
+
+La tarjeta del hero y la sección Sobre mí no mostraban foto en el primer render porque ambos fallbacks tenían `photo: ''`. Cambiado a la última foto original ya publicada (21,153 B, JPEG); el contenido vivo de CMS sustituye ese valor al responder, por lo que el administrador sigue controlando la imagen. Verificación directa de la imagen: HTTP 200, ~0.38 s TTFB. Los hosts `albertsanfle.com` y `www.albertsanfle.com` responden 200 y ninguno redirige al otro; no se aplicó cambio de DNS ni redirect.
+
+Compilado y publicado el fallback; invalidación `IM1H4NA40A8HRZBXYKI8FRHWH` completada. El HTML raíz y el bundle con la URL de imagen responden correctamente. Rollback del HTML actual desde `.cms-backups/public-before-profile-firstpaint-20261106/` e invalidar `/` y `/index.html`.
+
 ## Rendimiento público — 06/11/2026
 
 - Las consultas del contenido publicado se agrupan por ruta en `GET /api/public/bootstrap?kinds=...`. El backend limita los tipos consultables a la lista pública, mapea solo registros publicados y conserva la ruta individual anterior. El frontend tiene fallback a las rutas anteriores si el agregado falla durante una transición.
