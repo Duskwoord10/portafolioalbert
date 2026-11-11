@@ -393,14 +393,14 @@ export default function Contact() {
         .as-contact-section {
           position: relative;
           width: 100%;
-          padding: 96px 24px;
+          padding: clamp(7.5rem, 10vw, 9.5rem) 24px clamp(5rem, 7vw, 6.5rem);
           overflow: hidden;
           background:
-            radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.10), transparent 28%),
-            radial-gradient(circle at 86% 18%, rgba(99, 102, 241, 0.12), transparent 30%),
-            linear-gradient(180deg, #08121f 0%, #0a1220 46%, #0b1020 100%);
+            radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.12), transparent 32%),
+            radial-gradient(circle at 86% 18%, rgba(37, 99, 235, 0.14), transparent 34%),
+            linear-gradient(180deg, #040918 0%, #040812 100%);
           font-family:
-            Inter,
+            'Inter',
             ui-sans-serif,
             system-ui,
             -apple-system,
@@ -439,15 +439,15 @@ export default function Contact() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-height: 30px;
-          padding: 0 13px;
-          border: 1px solid #dbeafe;
+          min-height: 32px;
+          padding: 0 15px;
+          border: 1px solid rgba(56, 189, 248, 0.28);
           border-radius: 999px;
-          color: #2563eb;
-          background: #eff6ff;
+          color: #7dd3fc;
+          background: rgba(14, 165, 233, 0.12);
           font-size: 11px;
-          font-weight: 900;
-          letter-spacing: 0.14em;
+          font-weight: 800;
+          letter-spacing: 0.15em;
           text-transform: uppercase;
         }
 

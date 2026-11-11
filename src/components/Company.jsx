@@ -200,9 +200,12 @@ export default function Company() {
         #company { scroll-margin-top: 80px; }
 
         .mc-section {
-          background: #05090f;
+          background:
+            radial-gradient(ellipse 60% 45% at 12% 4%, rgba(37, 99, 235, 0.18) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 40% at 88% 8%, rgba(6, 182, 212, 0.12) 0%, transparent 55%),
+            linear-gradient(180deg, #040918 0%, #040812 100%);
           color: #e2eaf5;
-          padding: clamp(5rem, 8vw, 8rem) 1.25rem clamp(4rem, 6vw, 6rem);
+          padding: clamp(7.5rem, 10vw, 9.5rem) 1.25rem clamp(4.5rem, 6vw, 6.5rem);
           position: relative;
           overflow: hidden;
         }
@@ -211,18 +214,22 @@ export default function Company() {
           content: '';
           position: absolute;
           inset: 0;
-          background:
-            radial-gradient(ellipse 60% 40% at 10% 0%, rgba(37,99,235,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 35% at 90% 5%, rgba(6,182,212,0.10) 0%, transparent 55%);
+          opacity: 0.35;
+          background-image:
+            linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+          background-size: 54px 54px;
+          mask-image: linear-gradient(to bottom, #000 15%, transparent 85%);
+          -webkit-mask-image: linear-gradient(to bottom, #000 15%, transparent 85%);
           pointer-events: none;
         }
 
         .mc-wrap {
-          max-width: 1160px;
+          max-width: 1200px;
           margin: 0 auto;
           display: flex;
           flex-direction: column;
-          gap: 2.5rem;
+          gap: 2.75rem;
           position: relative;
         }
 
@@ -231,30 +238,30 @@ export default function Company() {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 5px 12px;
+          padding: 6px 14px;
           border-radius: 999px;
-          background: rgba(6,182,212,0.1);
-          border: 1px solid rgba(6,182,212,0.22);
-          color: #67e8f9;
+          background: rgba(14, 165, 233, 0.12);
+          border: 1px solid rgba(56, 189, 248, 0.26);
+          color: #7dd3fc;
           font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
+          font-weight: 800;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           width: fit-content;
         }
 
         .mc-pill-white {
-          background: rgba(255,255,255,0.12);
-          border-color: rgba(255,255,255,0.2);
+          background: rgba(255,255,255,0.14);
+          border-color: rgba(255,255,255,0.24);
           color: #ffffff;
         }
 
         .mc-label {
           display: inline-block;
-          color: #67e8f9;
-          font-size: 0.7rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
+          color: #7dd3fc;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
         }
 
@@ -268,27 +275,35 @@ export default function Company() {
 
         .mc-headline {
           margin: 0;
-          font-size: clamp(2.2rem, 4.8vw, 4.2rem);
-          font-weight: 800;
-          line-height: 1.0;
-          letter-spacing: -0.04em;
-          color: #ffffff;
+          font-size: clamp(2.4rem, 5vw, 4.35rem);
+          font-weight: 900;
+          line-height: 1.02;
+          letter-spacing: -0.05em;
+          background: linear-gradient(135deg, #ffffff 0%, #dbeafe 55%, #7dd3fc 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .mc-sub {
           margin: 0;
           color: #94a8be;
-          font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+          font-size: clamp(0.98rem, 1.4vw, 1.1rem);
           line-height: 1.75;
-          max-width: 700px;
+          max-width: 720px;
         }
 
         /* ── Cards ───────────────────────────────────────── */
         .mc-card {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 20px;
-          padding: 1.75rem;
+          background: linear-gradient(160deg, rgba(14, 25, 46, 0.84) 0%, rgba(8, 15, 30, 0.9) 100%);
+          border: 1px solid rgba(148, 163, 184, 0.16);
+          border-radius: 24px;
+          padding: 2rem;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.06),
+            0 20px 50px rgba(2, 6, 23, 0.38);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
         }
 
         /* ── Hero ────────────────────────────────────────── */

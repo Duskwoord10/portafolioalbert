@@ -1,62 +1,102 @@
-/* ========================================
-   SECCIÓN DE CITA DE BILL GATES
-   ======================================== */
+/* ============================================================
+   HOMEPAGE SECTIONS · Quote & Social Presence
+   Archivo: src/pages/HomePage.css
+   ============================================================ */
+
+/* ── Quote Section ─────────────────────────────────────────── */
 .quote-section {
-  padding: 5rem 0;
-  background: transparent;
   position: relative;
+  padding: clamp(4.5rem, 7vw, 6.5rem) 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 55% 50% at 50% 50%, rgba(14, 165, 233, 0.08), transparent 70%);
 }
 
 .quote-container {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
-  gap: 3rem;
-  max-width: 1000px;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  max-width: 1060px;
   margin: 0 auto;
-  padding: 3rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  transition: border-color 0.3s ease;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.12), transparent 42%),
+    radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 45%),
+    linear-gradient(155deg, rgba(13, 23, 42, 0.86) 0%, rgba(8, 15, 30, 0.92) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 28px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 24px 64px rgba(2, 6, 23, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .quote-container:hover {
-  border-color: rgba(14, 165, 233, 0.2);
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 30px 76px rgba(2, 6, 23, 0.55),
+    0 0 40px rgba(14, 165, 233, 0.1);
 }
 
 .quote-image-wrapper {
   position: relative;
   flex-shrink: 0;
+  display: grid;
+  place-items: center;
 }
 
-/* Eliminado el glow excesivo, solo dejamos un borde sutil */
 .quote-image-glow {
-  display: none;
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 68%);
+  filter: blur(14px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .quote-image {
-  width: 180px;
-  height: 180px;
+  width: 176px;
+  height: 176px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(14, 165, 233, 0.3);
-  transition: transform 0.3s ease;
+  border: 3px solid rgba(56, 189, 248, 0.38);
+  box-shadow:
+    0 0 0 8px rgba(15, 23, 42, 0.65),
+    0 16px 36px rgba(0, 0, 0, 0.45);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease;
 }
 
-.quote-image:hover {
-  transform: scale(1.03);
+.quote-container:hover .quote-image {
+  transform: scale(1.04);
+  border-color: rgba(56, 189, 248, 0.62);
 }
 
 .quote-content {
   flex: 1;
+  min-width: 0;
 }
 
 .quote-icon {
-  width: 48px;
-  height: 48px;
-  color: #0ea5e9;
-  margin-bottom: 1.25rem;
-  opacity: 0.6;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  color: #38bdf8;
+  margin-bottom: 1.15rem;
 }
 
 .quote-icon svg {
@@ -65,135 +105,177 @@
 }
 
 .quote-text {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #ffffff;
-  line-height: 1.7;
-  margin-bottom: 1.25rem;
+  margin: 0 0 1.15rem;
+  font-size: clamp(1.22rem, 2.1vw, 1.55rem);
+  font-weight: 650;
+  color: #f8fafc;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
   font-style: italic;
 }
 
 .quote-divider {
-  width: 60px;
+  width: 68px;
   height: 3px;
-  background: #0ea5e9;
-  border-radius: 2px;
-  margin-bottom: 1.25rem;
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
+  border-radius: 999px;
+  margin-bottom: 1.15rem;
 }
 
 .quote-subtext {
-  font-size: 1.0625rem;
-  color: #94a3b8;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  margin: 0 0 1.35rem;
+  font-size: 1rem;
+  color: #94a8be;
+  line-height: 1.72;
 }
 
 .quote-author {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .author-name {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #0ea5e9;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #38bdf8;
+  letter-spacing: -0.015em;
 }
 
 .author-title {
-  font-size: 0.9375rem;
-  color: #64748b;
-  font-weight: 500;
+  font-size: 0.88rem;
+  color: #7c93ad;
+  font-weight: 600;
 }
 
-/* ========================================
-   SECCIÓN DE REDES SOCIALES
-   ======================================== */
+/* ── Social Section ────────────────────────────────────────── */
 .social-section {
-  padding: 5rem 0;
-  background: transparent;
+  position: relative;
+  padding: clamp(4rem, 6vw, 6rem) 0 clamp(5rem, 8vw, 7rem);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 15%, rgba(37, 99, 235, 0.1), transparent 70%);
 }
 
 .social-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 3.25rem;
 }
 
-/* Simplificado el icono animado */
 .social-icon-animated {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
-  border-radius: 16px;
+  width: 58px;
+  height: 58px;
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 14px 32px rgba(37, 99, 235, 0.3);
+  border-radius: 18px;
   margin-bottom: 1.25rem;
 }
 
 .social-icon-animated svg {
-  width: 28px;
-  height: 28px;
-  color: white;
+  width: 26px;
+  height: 26px;
+  color: #ffffff;
 }
 
 .social-title {
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-size: clamp(2rem, 3.8vw, 2.75rem);
+  font-weight: 850;
+  letter-spacing: -0.04em;
   color: #ffffff;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.75rem;
 }
 
 .social-subtitle {
-  font-size: 1.125rem;
-  color: #94a3b8;
-  max-width: 500px;
+  font-size: clamp(0.98rem, 1.4vw, 1.1rem);
+  color: #94a8be;
+  max-width: 540px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.68;
 }
 
 .social-cards-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  max-width: 900px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem;
+  max-width: 960px;
   margin: 0 auto;
+  align-items: stretch;
 }
 
-/* Tarjetas simplificadas sin efectos de brillo excesivos */
 .social-card {
   position: relative;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 2rem;
+  isolation: isolate;
+  background: linear-gradient(160deg, rgba(14, 24, 45, 0.84) 0%, rgba(8, 15, 29, 0.9) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 26px;
+  padding: 2.15rem;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
-  transition: all 0.3s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 50px rgba(2, 6, 23, 0.38);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
 }
 
 .social-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Eliminado card-glow y card-shine */
-.card-glow,
+.card-glow {
+  position: absolute;
+  top: -90px;
+  right: -90px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  filter: blur(55px);
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.instagram-glow {
+  background: radial-gradient(circle, #e1306c, #f77737, transparent 70%);
+}
+
+.linkedin-glow {
+  background: radial-gradient(circle, #0a66c2, #38bdf8, transparent 70%);
+}
+
+.social-card:hover .card-glow {
+  opacity: 0.32;
+}
+
 .card-shine {
   display: none;
 }
 
-/* Instagram hover */
 .instagram-card:hover {
-  border-color: rgba(225, 48, 108, 0.3);
-  box-shadow: 0 20px 40px rgba(225, 48, 108, 0.15);
+  border-color: rgba(225, 48, 108, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 24px 56px rgba(225, 48, 108, 0.16);
 }
 
-/* LinkedIn hover */
 .linkedin-card:hover {
-  border-color: rgba(0, 119, 181, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 119, 181, 0.15);
+  border-color: rgba(56, 189, 248, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 24px 56px rgba(10, 102, 194, 0.2);
 }
 
 /* Header de la tarjeta */
@@ -204,12 +286,12 @@
   margin-bottom: 1.5rem;
 }
 
-/* Avatar simplificado sin animaciones de anillo */
 .avatar-ring {
-  width: 90px;
-  height: 90px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   padding: 3px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
 .instagram-ring {
@@ -217,7 +299,7 @@
 }
 
 .linkedin-ring {
-  background: linear-gradient(135deg, #0077b5, #0ea5e9);
+  background: linear-gradient(135deg, #0a66c2, #38bdf8);
 }
 
 .avatar-img {
@@ -226,29 +308,29 @@
   border-radius: 50%;
   object-fit: cover;
   object-position: top;
-  border: 3px solid #0f172a;
+  border: 3px solid #091224;
   transition: transform 0.3s ease;
 }
 
 .social-card:hover .avatar-img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
-/* Badge de red social */
 .social-badge {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 18px rgba(0, 0, 0, 0.28);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .social-badge svg {
-  width: 24px;
-  height: 24px;
-  color: white;
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
 }
 
 .instagram-badge {
@@ -256,89 +338,58 @@
 }
 
 .linkedin-badge-icon {
-  background: linear-gradient(135deg, #0077b5, #0ea5e9);
+  background: linear-gradient(135deg, #0a66c2, #0284c7);
 }
 
 .social-card:hover .social-badge {
-  transform: scale(1.1);
+  transform: scale(1.08) rotate(-4deg);
 }
 
-/* Info del perfil */
 .social-info {
-  margin-bottom: 1.25rem;
-}
-
-.social-handle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.25rem;
-}
-
-.social-name {
-  font-size: 0.9375rem;
-  color: #94a3b8;
-  margin-bottom: 0.375rem;
-}
-
-.social-desc {
-  font-size: 0.875rem;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.linkedin-desc {
-  margin-top: 0.375rem;
-}
-
-/* Estadísticas de Instagram */
-.social-stats {
-  display: flex;
-  gap: 1.25rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 1.5rem;
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-}
-
-.stat-num {
-  font-size: 1.375rem;
-  font-weight: 700;
+.social-handle {
+  font-size: 1.28rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: #ffffff;
-  transition: color 0.3s ease;
+  margin: 0 0 0.25rem;
 }
 
-.social-card:hover .stat-num {
-  color: #0ea5e9;
+.social-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #93c5fd;
+  margin: 0 0 0.45rem;
 }
 
-.stat-text {
-  font-size: 0.75rem;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
+.social-desc {
+  font-size: 0.9rem;
+  color: #94a8be;
+  line-height: 1.62;
+  margin: 0;
 }
 
-/* Botón de seguir */
+.linkedin-desc {
+  margin-top: 0.35rem;
+}
+
 .follow-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
+  gap: 0.65rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: 14px;
   color: #ffffff;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  transition: all 0.3s ease;
+  font-weight: 750;
+  font-size: 0.92rem;
+  margin-top: auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 12px 26px rgba(220, 39, 67, 0.25);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, filter 0.24s ease;
 }
 
 .instagram-btn {
@@ -347,12 +398,16 @@
 
 .social-card:hover .follow-btn {
   transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 16px 34px rgba(220, 39, 67, 0.34);
 }
 
 .follow-btn svg {
   width: 18px;
   height: 18px;
-  transition: transform 0.3s ease;
+  transition: transform 0.24s ease;
 }
 
 .social-card:hover .follow-btn svg {
@@ -362,31 +417,61 @@
 /* LinkedIn Badge Embed */
 .linkedin-embed {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 1rem;
-  min-height: 160px;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: auto;
+  min-height: 148px;
+  padding: 0.85rem;
+  background: rgba(4, 9, 20, 0.55);
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
-/* ========================================
-   RESPONSIVE
-   ======================================== */
+.linkedin-cookie-placeholder {
+  width: 100%;
+  padding: 1.15rem;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  text-align: center;
+}
+
+.linkedin-cookie-placeholder p {
+  color: #94a8be;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0 0 0.75rem;
+}
+
+.linkedin-cookie-placeholder button {
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(96, 165, 250, 0.42);
+  border-radius: 10px;
+  color: #dbeafe;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.24), rgba(14, 165, 233, 0.16));
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.linkedin-cookie-placeholder button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.65);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.36), rgba(14, 165, 233, 0.26));
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .quote-container {
     flex-direction: column;
     text-align: center;
-    gap: 2rem;
-    padding: 2rem;
+    gap: 1.75rem;
+    padding: 2.25rem 1.75rem;
   }
 
-  .quote-icon {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
+  .quote-icon,
   .quote-divider {
     margin-left: auto;
     margin-right: auto;
@@ -398,47 +483,21 @@
 }
 
 @media (max-width: 768px) {
-  .quote-section {
-    padding: 3.5rem 0;
-  }
-
-  .quote-image {
-    width: 150px;
-    height: 150px;
-  }
-
-  .quote-text {
-    font-size: 1.25rem;
-  }
-
-  .social-section {
-    padding: 3.5rem 0;
-  }
-
   .social-cards-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    padding: 0 1rem;
   }
 
-  .social-title {
-    font-size: 1.875rem;
-  }
-
-  .social-card {
-    padding: 1.75rem;
-  }
-
-  .avatar-ring {
-    width: 80px;
-    height: 80px;
+  .quote-image {
+    width: 144px;
+    height: 144px;
   }
 }
 
 @media (max-width: 480px) {
   .quote-container {
-    padding: 1.5rem;
-    border-radius: 20px;
+    padding: 1.65rem 1.25rem;
+    border-radius: 22px;
   }
 
   .quote-image {
@@ -446,35 +505,13 @@
     height: 120px;
   }
 
-  .quote-text {
-    font-size: 1.125rem;
-  }
-
-  .social-title {
-    font-size: 1.5rem;
-  }
-
   .social-card {
     padding: 1.5rem;
-    border-radius: 20px;
+    border-radius: 22px;
   }
 
   .avatar-ring {
-    width: 70px;
-    height: 70px;
-  }
-
-  .social-badge {
-    width: 40px;
-    height: 40px;
-  }
-
-  .follow-btn {
-    padding: 0.875rem 1.25rem;
-    font-size: 0.875rem;
+    width: 74px;
+    height: 74px;
   }
 }
-.linkedin-cookie-placeholder { padding: 18px; border: 1px solid rgba(150, 181, 226, .2); border-radius: 12px; background: rgba(255,255,255,.035); text-align: center; }
-.linkedin-cookie-placeholder p { color: #aebed3; font-size: 12px; line-height: 1.55; margin: 0 0 10px; }
-.linkedin-cookie-placeholder button { padding: 8px 12px; border: 1px solid rgba(120, 170, 240, .45); border-radius: 8px; color: #b5d4ff; background: rgba(75, 130, 220, .14); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
-.linkedin-cookie-placeholder button:hover { background: rgba(75, 130, 220, .28); }

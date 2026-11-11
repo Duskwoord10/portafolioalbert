@@ -34,13 +34,13 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: clamp(6rem, 9vw, 9rem) 0;
+  padding: clamp(7.5rem, 10vw, 9.5rem) 0 clamp(6rem, 8vw, 8.5rem);
 
   color: var(--about-text);
   background:
     radial-gradient(circle at 11% 8%, rgba(32, 230, 207, 0.1), transparent 26rem),
     radial-gradient(circle at 92% 22%, rgba(57, 119, 255, 0.1), transparent 30rem),
-    linear-gradient(180deg, #02060b 0%, #050a12 46%, #03070d 100%);
+    linear-gradient(180deg, #040918 0%, #050a14 46%, #040812 100%);
 }
 
 .about-section *,
